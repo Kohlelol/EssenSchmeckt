@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    /* <link rel="stylesheet" href="{% static 'css/login.css' %}"> */ /* uncomment if you have a css file */
+</head>
+<body>
+    <div name="login">
+        <form>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" class="input-field"><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" class="input-field"><br><br>
+            <button type="submit">Login</button>
+            <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+        </form>
+    </div>
+</body>
+
+<style>
+    div[name="login"] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    label, input {
+        margin: 5px;
+    }
+    button {
+        margin-top: 10px;
+    }
+    .input-field {
+        border-width: 2px; /* Increase the line width around the input fields */
+    }
+    .forgot-password {
+        margin-top: 25px;
+        text-align: center;
+    }
+</style>
+
+</html>
