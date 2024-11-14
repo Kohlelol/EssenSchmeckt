@@ -32,12 +32,12 @@
         }
         h2 {
             margin-bottom: 20px;
-            color: #ffffff; /* Change the color of the heading in dark mode */
+            color: #ffffff;
         }
         label {
             margin: 5px 0;
             font-weight: bold;
-            color: #ffffff; /* Change label color in dark mode */
+            color: #ffffff;
             display: block;
         }
         .input-field {
@@ -63,17 +63,17 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s;
-            margin-top: 15px; /* Space above the button */
+            margin-top: 15px;
         }
         button:hover {
             background-color: #0056b3;
         }
         .forgot-password {
-            margin-top: 20px; /* Adjusted space between button and forgot password link */
-            color: #66b3ff; /* Lighter link color in dark mode */
+            margin-top: 20px;
+            color: #66b3ff;
             text-decoration: none;
             font-size: 14px;
-            display: inline-block; /* Ensure it behaves like a block element */
+            display: inline-block;
         }
         .forgot-password:hover {
             text-decoration: underline;
@@ -81,8 +81,8 @@
         .breadcrumb {
             margin-bottom: 20px;
             font-size: 14px;
-            color: #66b3ff; /* Lighter text color in dark mode */
-            background-color: #333; /* Darker background for breadcrumb in dark mode */
+            color: #66b3ff;
+            background-color: #333;
             padding: 10px;
             border-radius: 5px;
         }
@@ -96,16 +96,16 @@
         }
         body.light-mode h2,
         body.light-mode label {
-            color: #333; /* Change color in light mode */
+            color: #333;
         }
         body.light-mode .forgot-password {
-            color: #007bff; /* Change link color in light mode */
+            color: #007bff;
         }
         body.light-mode .breadcrumb {
-            background-color: #e9ecef; /* Light gray background for breadcrumb */
-            color: #007bff; /* Darker text color in light mode */
+            background-color: #e9ecef;
+            color: #007bff;
         }
-        /* Switch styles */
+
         .switch {
             position: fixed;
             top: 20px;
@@ -170,24 +170,21 @@
         const toggleButton = document.getElementById('dark-mode-toggle');
         const body = document.body;
 
-        // Check the saved preference in localStorage
         if (localStorage.getItem('dark-mode') === 'enabled') {
             body.classList.add('dark-mode');
-            toggleButton.checked = true; // Set the toggle button to checked
+            toggleButton.checked = true;
         } else {
-            body.classList.remove('dark-mode'); // Ensure light mode is applied if not set
-            body.classList.add('light-mode'); // Set light mode as default if not saved
-            toggleButton.checked = false; // Set the toggle button to unchecked
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            toggleButton.checked = false;
         }
 
-        // Remove the loading class to show the body
         body.style.visibility = 'visible';
 
         toggleButton.addEventListener('change', () => {
             body.classList.toggle('dark-mode');
-            body.classList.toggle('light-mode'); // Toggle light mode class
+            body.classList.toggle('light-mode');
 
-            // Save the user's preference to localStorage
             if (body.classList.contains('dark-mode')) {
                 localStorage.setItem('dark-mode', 'enabled');
             } else {
