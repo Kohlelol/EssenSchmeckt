@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Groupemember List</title>
-</head>
-<body>
-    <h1> Groupmembers </h1>
+{% extends 'layout.html' %}
 
-</body>
-</html>
+{% block title %}Database List{% endblock %}
+
+{% block content %}
+    <div class="database-list-container">
+            {% for person in person %}
+                <article>
+                    <div class="database-list-item">
+                    <h2>{{ person.last_name }}</h2>
+                    <p>{{ person.date_of_birth }}</p>
+                    </div>
+                </article>
+            {% endfor %}
+    </div>
+{% endblock %}
