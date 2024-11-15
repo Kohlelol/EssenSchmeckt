@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.homepage),
     path('login/', views.login),
-    path('groupleader/', include('groupleader.urls')),
+    path('database/', include('database.urls')),
 ]
