@@ -35,9 +35,12 @@
             data-moon-icon="{% static 'images/moon-icon.png' %}">
         </label>
 
-        <a href="{% url 'users:logout' %}" class="logout-button" title="Logout">
-            <img src="{% static 'images/logout-icon.png' %}" alt="Logout" aria-label="Logout">
-        </a>
+        <form method="post" action="{% url 'users:logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="logout-button" title="Logout">
+                <img src="{% static 'images/logout-icon.png' %}" alt="Logout" aria-label="Logout">
+            </button>
+        </form>
     </div>
 
 
