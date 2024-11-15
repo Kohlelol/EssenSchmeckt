@@ -1,0 +1,139 @@
+        /* Default styles for dark mode */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #181818;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+    display: none;
+}
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.login-form {
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+    transition: background-color 0.3s;
+}
+h2 {
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+label {
+    margin: 5px 0;
+    font-weight: bold;
+    color: #ffffff;
+    display: block;
+}
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+.input-field:focus {
+    border-color: #0056b3;
+    outline: none;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.forgot-password {
+    margin-top: 20px;
+    color: #66b3ff;
+    text-decoration: none;
+    font-size: 14px;
+    display: inline-block;
+}
+.forgot-password:hover {
+    text-decoration: underline;
+}
+.breadcrumb {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #66b3ff;
+    background-color: #333;
+    padding: 10px;
+    border-radius: 5px;
+}
+/* Light mode styles */
+
+body.light-mode {
+    background-color: #f0f2f5;
+    color: #333;
+}
+body.light-mode .login-form {
+    background-color: #ffffff;
+}
+body.light-mode h2,
+body.light-mode label {
+    color: #333;
+}
+body.light-mode .forgot-password {
+    color: #007bff;
+}
+body.light-mode .breadcrumb {
+    background-color: #e9ecef;
+    color: #007bff;
+}
+
+.switch {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.switch input {
+    display: none;
+}
+.slider {
+    width: 34px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 34px;
+    position: relative;
+    transition: background-color 0.4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.4s;
+}
+input:checked + .slider {
+    background-color: #007bff;
+}
+input:checked + .slider:before {
+    transform: translateX(14px);
+}

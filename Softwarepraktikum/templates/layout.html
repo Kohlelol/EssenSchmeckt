@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="{% static 'js/dark-mode.js' %}"></script>
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+</head>
+<body id="body" class="dark-mode"> <!-- Set dark mode as default -->
+    <div class="breadcrumb">
+        {% block breadcrumb %}
+        {% endblock %}
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <label class="switch">
+        <input type="checkbox" id="dark-mode-toggle"> <!-- Set toggle to unchecked initially -->
+        <span class="slider"></span>
+    </label>
+</body>
+</html>
