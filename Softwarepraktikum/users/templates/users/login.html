@@ -4,14 +4,23 @@
 
 {% block content %}
     <div class="login-container">
-        <form class="login-form">
+        <form method="post" class="login-form">
+            {% csrf_token %}
             <h2>Login</h2>
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" class="input-field" required><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" class="input-field" required><br>
             <button type="submit">Login</button>
-            <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+            {% if form.errors %}
+                <div class="error">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
         </form>
     </div>
 {% endblock %}

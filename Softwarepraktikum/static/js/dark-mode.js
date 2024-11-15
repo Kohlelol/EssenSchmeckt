@@ -1,6 +1,18 @@
 document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('dark-mode-toggle');
     const body = document.body;
+    const toggleIcon = document.querySelector('.toggle-icon');
+    const sunIcon = toggleIcon.getAttribute('data-sun-icon');
+    const moonIcon = toggleIcon.getAttribute('data-moon-icon');
+
+    const updateIcon = () => {
+        if (body.classList.contains('dark-mode')) {
+            toggleIcon.src = sunIcon;
+        } else {
+            toggleIcon.src = moonIcon;
+        }
+    };
+
 
     if (localStorage.getItem('dark-mode') === 'enabled') {
         body.classList.add('dark-mode');
@@ -11,7 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleButton.checked = false;
     }
 
+    
     document.getElementById('body').style.display = 'block';
+    updateIcon();
 
     toggleButton.addEventListener('change', () => {
         body.classList.toggle('dark-mode');
@@ -22,5 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             localStorage.setItem('dark-mode', 'disabled');
         }
+        updateIcon();
     });
 });

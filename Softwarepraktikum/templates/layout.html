@@ -22,13 +22,25 @@
         {% endblock %}
     </div>
 
+
+
     {% block content %}
     {% endblock %}
 
-    <label class="switch">
-        <input type="checkbox" id="dark-mode-toggle"> <!-- Set toggle to unchecked initially -->
-        <span class="slider"></span>
-    </label>
+    <div class="top-right"> <!-- only if login is guaranteed -->
+        <label class="switch">
+            <input type="checkbox" id="dark-mode-toggle"> <!-- Set toggle to unchecked initially -->
+            <img src="{% static 'images/sun-icon.png' %}" alt="Toggle Dark Mode" class="toggle-icon"
+            data-sun-icon="{% static 'images/sun-icon.png' %}"
+            data-moon-icon="{% static 'images/moon-icon.png' %}">
+        </label>
+
+        <a href="{% url 'users:logout' %}" class="logout-button" title="Logout">
+            <img src="{% static 'images/logout-icon.png' %}" alt="Logout" aria-label="Logout">
+        </a>
+    </div>
+
+
 </body>
 </html>
 
