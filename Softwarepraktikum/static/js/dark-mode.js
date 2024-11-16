@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const updateIcon = () => {
         if (body.classList.contains('dark-mode')) {
             toggleIcon.src = sunIcon;
+            console.log(toggleIcon.src)
         } else {
             toggleIcon.src = moonIcon;
+            console.log(toggleIcon.src)
         }
     };
 
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('body').style.display = 'block';
     updateIcon();
 
-    toggleButton.addEventListener('change', () => {
+    toggleButton.addEventListener('click', () => {
         body.classList.toggle('dark-mode');
         body.classList.toggle('light-mode');
 

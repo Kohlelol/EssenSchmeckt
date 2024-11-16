@@ -251,8 +251,3 @@ body.light-mode .breadcrumb-item:not(:last-child)::after {
 .toggle-icon:hover {
     transform: scale(1.1);
 }
-
-/* Light mode styles */
-body.light-mode .toggle-icon {
-    content: url("{% static 'images/moon-icon.png' %}");
-}
