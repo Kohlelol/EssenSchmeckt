@@ -61,7 +61,7 @@ class group(models.Model):
     def __str__(self):
         return f"{self.group_id} {self.group_name} {self.task} {self.facility_id}"
 
-# change cache
+
 
 class groupleader(models.Model):
     group = models.ForeignKey(group, on_delete=models.CASCADE, related_name='group_leader')
