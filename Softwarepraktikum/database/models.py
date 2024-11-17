@@ -16,7 +16,7 @@ class Person(models.Model):
         verbose_name_plural = "People"
 
     def __str__(self):
-        return self.first_name + " " + self.last_name
+        return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id} {self.facility_id}"
     
       
     
@@ -31,7 +31,7 @@ class status(models.Model):
         verbose_name_plural = "Statuses"
     
     def __str__(self):
-        return f"{self.person.id} {self.status} - {self.date}"
+        return f"{self.person.id} {self.status} {self.date}"
 
 
 class food(models.Model):
@@ -45,7 +45,7 @@ class food(models.Model):
         verbose_name_plural = "Food orders"
     
     def __str__(self):
-        return f"{self.person.id} {self.food} - {self.date}"
+        return f"{self.person.id} {self.food} {self.date}"
     
 
 class group(models.Model):
@@ -59,7 +59,7 @@ class group(models.Model):
         verbose_name_plural = "Groups"
 
     def __str__(self):
-        return f"{self.group_id}, {self.group_name}, {self.task}, {self.facility_id}"
+        return f"{self.group_id} {self.group_name} {self.task} {self.facility_id}"
 
 
 
@@ -86,7 +86,7 @@ class facility(models.Model):
         verbose_name_plural = "Facilities"
 
     def __str__(self):
-        return self.facility_name
+        return f"{self.facility_id} {self.facility_name} {self.facility_location}"
 
 
 class facility_manager(models.Model):
