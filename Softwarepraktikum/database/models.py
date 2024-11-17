@@ -11,9 +11,14 @@ class Person(models.Model):
     group_id = models.ForeignKey('group', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
     facility_id = models.ForeignKey('facility', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
 
+    class Meta:
+        verbose_name = "Person"
+        verbose_name_plural = "People"
+
     def __str__(self):
         return self.first_name + " " + self.last_name
     
+      
     
 class status(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='status')
@@ -22,6 +27,8 @@ class status(models.Model):
     
     class Meta:
         unique_together = ('person', 'date')
+        verbose_name = "Status"
+        verbose_name_plural = "Statuses"
     
     def __str__(self):
         return f"{self.person.id} {self.status} - {self.date}"
@@ -34,6 +41,8 @@ class food(models.Model):
     
     class Meta:
         unique_together = ('person', 'date')
+        verbose_name = "Food order"
+        verbose_name_plural = "Food orders"
     
     def __str__(self):
         return f"{self.person.id} {self.food} - {self.date}"
@@ -45,6 +54,14 @@ class group(models.Model):
     task = models.CharField(max_length=100)
     facility_id = models.ForeignKey('facility', on_delete=models.CASCADE, related_name='groups')
 
+    class Meta:
+        verbose_name = "Group"
+        verbose_name_plural = "Groups"
+
+    def __str__(self):
+        return f"{self.group_id}, {self.group_name}, {self.task}, {self.facility_id}"
+
+
 
 class groupleader(models.Model):
     group = models.ForeignKey(group, on_delete=models.CASCADE, related_name='group_leader')
@@ -52,6 +69,8 @@ class groupleader(models.Model):
     
     class Meta:
         unique_together = ('group_id', 'person_id')
+        verbose_name = "Group leader"
+        verbose_name_plural = "Group leaders"
     
     def __str__(self):
         return f"{self.group_id} {self.person_id}"
@@ -62,6 +81,10 @@ class facility(models.Model):
     facility_name = models.CharField(max_length=30)
     facility_location = models.CharField(max_length=30)
     
+    class Meta:
+        verbose_name = "Facility"
+        verbose_name_plural = "Facilities"
+
     def __str__(self):
         return self.facility_name
 
@@ -72,6 +95,8 @@ class facility_manager(models.Model):
     
     class Meta:
         unique_together = ('facility_id', 'person_id')
+        verbose_name = "Facility manager"
+        verbose_name_plural = "Facility managers"
     
     def __str__(self):
         return f"{self.facility_id} {self.person_id}"
