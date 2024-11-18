@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('dark-mode-toggle');
     const body = document.body;
-    const toggleIcon = document.querySelector('.toggle-icon');
+    const toggleIcon = document.querySelector('.toggle-icon-button');
     const sunIcon = toggleIcon.getAttribute('data-sun-icon');
     const moonIcon = toggleIcon.getAttribute('data-moon-icon');
 

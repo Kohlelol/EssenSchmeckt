@@ -13,13 +13,33 @@
     </title>
 </head>
 <body id="body" class="dark-mode"> <!-- Set dark mode as default -->
-    <div class="breadcrumb">
-        <a href="/" class="breadcrumb-item">Home</a>
-        <a href="/" class="breadcrumb-item">Category</a>
-        <a href="/" class="breadcrumb-item">Subcategory</a>
-        <a href="/" class="breadcrumb-item">Product</a>
-        {% block breadcrumb %}
-        {% endblock %}
+
+    <div class="top-bar">
+        <div class="breadcrumb">
+            <a href="/" class="breadcrumb-item">Home</a>
+            <a href="/" class="breadcrumb-item">Category</a>
+            <a href="/" class="breadcrumb-item">Subcategory</a>
+            <a href="/" class="breadcrumb-item">Product</a>
+            {% block breadcrumb %}
+            {% endblock %}
+        </div>
+        <div class="top-right">
+            <label class="settings-container">
+                <button id="dark-mode-toggle"> <!-- Set toggle to unchecked initially --> 
+                <img src="{% static 'images/sun-icon.png' %}" alt="Toggle Dark Mode" class="toggle-icon-button" aria-label="Toggle Dark Mode"
+                data-sun-icon="{% static 'images/sun-icon.png' %}"
+                data-moon-icon="{% static 'images/moon-icon.png' %}">
+                </button>
+            </label>
+
+            <form method="post" action="{% url 'users:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="logout-button" title="Logout">
+                    <img src="{% static 'images/logout-icon.png' %}" alt="Logout" aria-label="Logout">
+                </button>
+            </form>
+        </div>
+
     </div>
 
 
@@ -27,22 +47,7 @@
     {% block content %}
     {% endblock %}
 
-    <div class="top-right"> <!-- only if login is guaranteed -->
-        <label class="switch">
-            <button id="dark-mode-toggle"> <!-- Set toggle to unchecked initially --> 
-            <img src="{% static 'images/sun-icon.png' %}" alt="Toggle Dark Mode" class="toggle-icon" aria-label="Toggle Dark Mode"
-            data-sun-icon="{% static 'images/sun-icon.png' %}"
-            data-moon-icon="{% static 'images/moon-icon.png' %}">
-            </button>
-        </label>
 
-        <form method="post" action="{% url 'users:logout' %}">
-            {% csrf_token %}
-            <button type="submit" class="logout-button" title="Logout">
-                <img src="{% static 'images/logout-icon.png' %}" alt="Logout" aria-label="Logout">
-            </button>
-        </form>
-    </div>
 
 
 </body>

@@ -1,5 +1,10 @@
         /* Default styles for dark mode */
 
+* {
+    padding: 0%;
+    margin: 0%;
+}
+
 body {
     font-family: Arial, sans-serif;
     background-color: #181818;
@@ -47,6 +52,7 @@ label {
     border-color: #0056b3;
     outline: none;
 }
+
 button {
     width: 100%;
     padding: 10px;
@@ -59,9 +65,11 @@ button {
     transition: background-color 0.3s;
     margin-top: 15px;
 }
+
 button:hover {
     background-color: #0056b3;
 }
+
 .forgot-password {
     margin-top: 20px;
     color: #66b3ff;
@@ -78,6 +86,7 @@ button:hover {
     display: flex;
     align-items: center;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin-top: 20px;
     margin-bottom: 20px;
     position: relative;
 }
@@ -98,6 +107,7 @@ button:hover {
 
 .breadcrumb-item:first-child {
     clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
+    margin-left: -15px;
 }
 
 .breadcrumb-item:hover {
@@ -115,31 +125,6 @@ button:hover {
     border-top: 7.5px solid transparent;
     border-bottom: 7.5px solid transparent;
     transform: translateY(-50%);
-}
-
-/* Light mode styles */
-
-body.light-mode {
-    background-color: #f0f2f5;
-    color: #333;
-}
-
-body.light-mode .login-form {
-    background-color: #ffffff;
-}
-
-body.light-mode h2,
-body.light-mode label {
-    color: #333;
-}
-
-body.light-mode .forgot-password {
-    color: #007bff;
-}
-
-body.light-mode .breadcrumb {
-    background-color: #e9ecef;
-    color: #007bff;
 }
 
 .switch {
@@ -180,50 +165,37 @@ input:checked + .slider:before {
     transform: translateX(14px);
 }
 
-body.light-mode .breadcrumb-item {
-    background-color: #e9ecef;
-    color: #007bff;
-}
-
-body.light-mode .breadcrumb-item:not(:last-child)::after {
-    border-left-color: #e9ecef;
-}
-
-/* Style for the top-right logout button */
-.top-right {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-}
-
-.logout-button img {
-    width: 24px;
-    height: 24px;
-    transition: transform 0.3s ease;
-}
-
-.logout-button img:hover {
-    transform: scale(1.1);
-}
 
 /* Style for the top-right settings area */
-.top-right {
-    position: absolute;
-    top: 20px;
-    right: 20px;
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background-color: #333;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
+    align-items: left;
+    padding: 0 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+
 }
 
-.settings {
+.top-right {
+    position: relative;
+    top: -7px;
+    right: 10px;
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between items */
+    gap: 20px;
 }
 
 .logout-button img {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     transition: transform 0.3s ease;
 }
 
@@ -231,23 +203,61 @@ body.light-mode .breadcrumb-item:not(:last-child)::after {
     transform: scale(1.1);
 }
 
+
 /* Style for the dark mode toggle */
-.switch {
+.settings-container {
     position: relative;
     display: inline-block;
 }
 
-.switch input {
+.settings-container input {
     display: none;
 }
 
-.toggle-icon {
-    width: 24px;
-    height: 24px;
+.toggle-icon-button {
+    width: 20px;
+    height: 20px;
     cursor: pointer;
     transition: transform 0.3s ease;
 }
 
-.toggle-icon:hover {
+.toggle-icon-button:hover {
     transform: scale(1.1);
+}
+
+
+
+/* Light mode styles */
+
+body.light-mode {
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+body.light-mode .login-form {
+    background-color: #ffffff;
+}
+
+body.light-mode h2,
+body.light-mode label {
+    color: #333;
+}
+
+body.light-mode .forgot-password {
+    color: #007bff;
+}
+
+body.light-mode .breadcrumb {
+    background-color: #f0f2f5;
+    color: #007bff;
+}
+
+body.light-mode .breadcrumb-item {
+    background-color: #007bff;
+    color: black;
+    outline-color: #f0f2f5;
+}
+
+body.light-mode .breadcrumb-item:not(:last-child)::after {
+    border-left-color: #f0f2f5;
 }
