@@ -5,7 +5,7 @@ import qrcode
 # Create your models here.
 
 class Person(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid16, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=30)
     date_of_birth = models.DateField()
@@ -21,7 +21,7 @@ class Person(models.Model):
         return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id} {self.facility_id}"
     
     def regenerate_UUID(self):
-        self.id = uuid.uuid16()
+        self.id = uuid.uuid4()
         self.save()
         self.generate_QR()
         return self.id
