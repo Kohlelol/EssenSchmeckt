@@ -53,7 +53,7 @@ label {
     outline: none;
 }
 
-button {
+.login-submit-button {
     width: 100%;
     padding: 10px;
     background-color: #007bff;
@@ -66,7 +66,7 @@ button {
     margin-top: 15px;
 }
 
-button:hover {
+.login-submit-button:hover {
     background-color: #0056b3;
 }
 
@@ -193,13 +193,25 @@ input:checked + .slider:before {
     gap: 20px;
 }
 
+.logout-button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+
 .logout-button img {
+    cursor: pointer;
     width: 20px;
     height: 20px;
     transition: transform 0.3s ease;
 }
 
-.logout-button img:hover {
+.logout-button:hover {
     transform: scale(1.1);
 }
 
@@ -214,14 +226,25 @@ input:checked + .slider:before {
     display: none;
 }
 
-.toggle-icon-button {
+.dark-mode-toggle-button {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+    margin-top: 15px;
+}
+
+.dark-mode-toggle-button img {
     width: 20px;
     height: 20px;
     cursor: pointer;
     transition: transform 0.3s ease;
 }
 
-.toggle-icon-button:hover {
+.dark-mode-toggle-button:hover {
     transform: scale(1.1);
 }
 
