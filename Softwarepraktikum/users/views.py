@@ -19,7 +19,7 @@ def login_view(request):
                 login(request, user)
                 if 'next' in request.POST:
                     return redirect(request.POST.get('next'))
-                return redirect('users:redirect')
+                return redirect('users:select')
     else:
         form = AuthenticationForm()
     return render(request, 'users/login.html', {'form': form})
@@ -30,13 +30,30 @@ def logout_view(request):
         return redirect('home')
 
 @login_required(login_url='/users/login/')
-def redirect_view(request):
+def select_view(request):
     user = request.user
     if user.groups.filter(name='admin').exists():
-        return redirect('')
+        group = "admin"
+    
+    elif user.groups.filter(name='management').exists():
+        group = "management"
+
     elif user.groups.filter(name='facility_manager').exists():
-        return redirect('')
+        group = "facility_manager"
+    
+    elif user.groups.filter(name='groupleader').exists() and user.groups.filter(name='kitchen_staff').exists():
+        group = "groupleader_kitchen_staff"
+
     elif user.groups.filter(name='groupleader').exists():
-        return redirect('')
+        group = "groupleader"
+    
     elif user.groups.filter(name='kitchen_staff').exists():
-        return redirect('')
+        group = "kitchen_staff"
+
+    else:
+        group = None
+
+    context = {
+        "group": group
+    }
+    return render(request, 'users/select.html', context)

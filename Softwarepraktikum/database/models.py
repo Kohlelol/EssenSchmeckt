@@ -1,9 +1,11 @@
 from django.db import models
+import uuid
+import qrcode
 
 # Create your models here.
 
 class Person(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.UUIDField(primary_key=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=30)
     date_of_birth = models.DateField()
@@ -18,7 +20,29 @@ class Person(models.Model):
     def __str__(self):
         return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id} {self.facility_id}"
     
-      
+    def regenerate_UUID(self):
+        self.id = uuid.uuid4()
+        self.save()
+        self.generate_QR()
+        return self.id
+    
+    def generate_QR(self):
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+
+        qr.add_data(self.id)
+        qr.make(fit=True)
+        img = qr.make_image(fill_color="black", back_color="white")
+        self.qr_code = img
+
+        self.save()
+
+        return self.qr_code
+          
     
 class status(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='status')
