@@ -3,14 +3,30 @@
 {% block title %}Database List{% endblock %}
 
 {% block content %}
-    <div class="database-list-container">
+<br>
+<br>
+<br>
+<br>
+
+<div class="database-list-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th> 
+            </tr>
+        </thead>
+        <tbody>
             {% for person in person %}
-                <article>
-                    <div class="database-list-item">
-                    <h2>{{ person.last_name }}</h2>
-                    <p>{{ person.date_of_birth }}</p>
-                    </div>
-                </article>
+            <tr>
+                <div class="database-list-container">
+                    <th>{{ person.last_name }}</th>
+                </div>
+            </tr> 
             {% endfor %}
-    </div>
-{% endblock %}
+        </tbody>  
+    </table>
+</div>
+   
+{% endblock %}  
+
+
