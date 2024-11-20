@@ -2,18 +2,42 @@
 
 {% extends "layout.html" %}
 
-{% if group == "admin" %}
+{% block title %}Select{% endblock %}
 
-{% elif group == "management" %}
+{% block content %}
 
-{% elif group == "facility_manager" %}
+    <div class="center-box">
+        <div class="select-box">
+        {% if group == "admin" %}
 
-{% elif group == "groupleader_kitchen_staff" %}
+        {% elif group == "management" %}
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Facility Manager Dashboard</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Facility Manager Dashboard</button>
 
-{% elif group == "groupleader" %}
+        {% elif group == "facility_manager" %}
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Set Groupleader</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Set substitute</button>
 
-{% elif group == "kitchen_staff" %}
+        {% elif group == "groupleader_kitchen_staff" %}
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Attendance</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Order</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">QR-Code Scanner</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Daily Order</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Edit Orders</button>
 
-{% else  %}
+        {% elif group == "groupleader" %}
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Attendance</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Order</button>
 
-{% endif %}
+        {% elif group == "kitchen_staff" %}
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">QR-Code Scanner</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Daily Order</button>
+        <button class="redirect-button" onclick="window.location.href='{% url 'database:database_list' %}'">Edit Orders</button>
+        
+        {% else  %}
+        <p>Group not found</p>
+        {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -32,3 +32,23 @@ def database_list(request):
     return render(request, 'database/database_list.html', {'person': person})
 
 
+def attendance(request):
+    return render(request, 'database/attendance.html')
+
+def daily_order(request):
+    return render(request, 'database/daily_order.html')
+
+def edit_orders(request):
+    return render(request, 'database/edit_orders.html')
+
+def order(request):
+    return render(request, 'database/order.html')
+
+def qr_code_scanner(request):
+    return render(request, 'database/qr_code_scanner.html')
+
+def setgroupleader(request):
+    return render(request, 'database/setgroupleader.html')
+
+def setsubstitute(request):
+    return render(request, 'database/setsubstitute.html')
