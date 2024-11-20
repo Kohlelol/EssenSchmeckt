@@ -21,7 +21,7 @@ class Person(models.Model):
         return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id} {self.facility_id}"
     
     def regenerate_UUID(self):
-        self.id = uuid.uuid4()
+        self.id = uuid.uuid16()
         self.save()
         self.generate_QR()
         return self.id
