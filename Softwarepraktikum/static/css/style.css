@@ -285,8 +285,6 @@ input:checked + .slider:before {
 }
 
 
-
-
 .redirect-button:hover {
     background-color: #0056b3;
 }
