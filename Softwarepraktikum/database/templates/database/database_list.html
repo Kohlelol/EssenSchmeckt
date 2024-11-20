@@ -9,24 +9,50 @@
 <br>
 
 <div class="database-list-table">
+    <form id="search-form" method="get" action="{% url 'database:database_list' %}">
+        <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+    </form>
     <table>
         <thead>
             <tr>
                 <th>Name</th> 
+                <th>Vorname</th>
             </tr>
         </thead>
-        <tbody>
-            {% for person in person %}
-            <tr>
-                <div class="database-list-container">
-                    <th>{{ person.last_name }}</th>
-                </div>
-            </tr> 
-            {% endfor %}
+        <tbody id="resultContainer">
+            {% include 'person_list.html' %}
         </tbody>  
     </table>
 </div>
-   
+
+
+
 {% endblock %}  
 
-
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        const searchForm = document.getElementById('resultContainer');
+    
+        searchInput.addEventListener('input', function() {
+            const query = searchInput.value;
+    
+            // Send an AJAX request
+            fetch(`/database/fetch-persons/?q=${query}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.text())
+            .then(data => {
+                // Update the result container with the new data
+                resultContainer.innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+    </script>
+{% endblock %}

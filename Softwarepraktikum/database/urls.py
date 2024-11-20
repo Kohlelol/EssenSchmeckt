@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.views.generic import TemplateView
+from .views import fetch_persons
 
 app_name = 'database'
 
@@ -12,4 +14,6 @@ urlpatterns = [
     path('qr_code_scanner/', views.qr_code_scanner, name='qr_code_scanner'),
     path('setgroupleader/', views.setgroupleader, name='setgroupleader'),
     path('setsubstitute/', views.setsubstitute, name='setsubstitute'),
+    path('persons_list/', TemplateView.as_view(template_name='person_list.html'), name='person_list_view'),
+    path('fetch-persons/', fetch_persons, name='fetch_persons'),
 ]

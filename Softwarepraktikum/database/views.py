@@ -28,8 +28,22 @@ def read_csv_pandas(csvfile_path):
 @login_required(login_url='/users/login/')
 # @group_required('groupleader')
 def database_list(request):
-    person = Person.objects.all().order_by('last_name')
+    query = request.GET.get('q')
+    if query:
+        person = Person.objects.filter(first_name__icontains=query) | Person.objects.filter(last_name__icontains=query)
+    else:
+        person = Person.objects.all()
+
     return render(request, 'database/database_list.html', {'person': person})
+
+def fetch_persons(request):
+    query = request.GET.get('q', '')
+    if query:
+        persons = Person.objects.filter(first_name__icontains=query) | Person.objects.filter(last_name__icontains=query)
+    else:
+        persons = Person.objects.all()
+    return render(request, 'person_list.html', {'person': persons})                                                          
+
 
 
 def attendance(request):
