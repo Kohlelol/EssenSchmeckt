@@ -1,10 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 import uuid
 import qrcode
 
 # Create your models here.
 
 class Person(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person', null=True, blank=True, default=None)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=30)
