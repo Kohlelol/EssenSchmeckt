@@ -41,24 +41,3 @@ document.addEventListener('DOMContentLoaded', () => {
         updateIcon();
     });
 });
-
-
-
-const searchInput = document.getElementById('search-input');
-if (searchInput) {
-    searchInput.addEventListener('input', function() {
-        const query = this.value;
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', `/database/list/?q=${query}`, true);
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 400) {
-                const results = document.getElementById('results');
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(xhr.responseText, 'text/html');
-                results.innerHTML = doc.getElementById('results').innerHTML;
-            }
-        };
-        xhr.send();
-    });
-};
