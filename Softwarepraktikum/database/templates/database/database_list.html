@@ -49,7 +49,7 @@
             .then(response => response.text())
             .then(data => {
                 // Update the result container with the new data
-                resultContainer.innerHTML = data;
+                searchForm.innerHTML = data;
             })
             .catch(error => console.error('Error:', error));
         });
