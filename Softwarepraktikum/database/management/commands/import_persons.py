@@ -34,4 +34,4 @@ class Command(BaseCommand):
             )
             persons.append(person)
         Person.objects.bulk_create(persons)
-        self.stdout.write(self.style.SUCCESS(f'Person {person} created'))
+        self.stdout.write(self.style.SUCCESS(f'Persons created'))

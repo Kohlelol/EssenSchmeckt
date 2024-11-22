@@ -54,7 +54,7 @@ def database_list(request):
     else:
         persons = Person.objects.filter(group_id__in=allowed_group_ids)
 
-    allowed_group_names = group.objects.filter(id__in=allowed_group_ids).values_list('name', flat=True)
+    allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
 
     return render(request, 'database/database_list.html', {'person': persons, 'groups': allowed_group_names})
 
@@ -71,7 +71,7 @@ def fetch_persons(request):
     else:
         persons = Person.objects.filter(group_id__in=allowed_group_ids)
 
-    allowed_group_names = group.objects.filter(id__in=allowed_group_ids).values_list('name', flat=True)
+    allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
 
     return render(request, 'person_list.html', {'person': persons, 'groups': allowed_group_names})                                                          
 
