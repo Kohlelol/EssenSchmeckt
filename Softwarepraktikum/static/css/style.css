@@ -102,7 +102,6 @@ label {
     transition: background-color 0.3s ease;
     /* clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0 50%); */
     clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
-    outline: 2px solid black;
 }
 
 .breadcrumb-item:first-child {
@@ -318,14 +317,14 @@ body.light-mode .forgot-password {
 }
 
 body.light-mode .breadcrumb {
-    background-color: #f0f2f5;
+    background-color: transparent;
     color: #007bff;
 }
 
 body.light-mode .breadcrumb-item {
     background-color: #007bff;
     color: black;
-    outline-color: #f0f2f5;
+    outline-color: transparent;
 }
 
 body.light-mode .breadcrumb-item:not(:last-child)::after {
@@ -453,7 +452,6 @@ table.database_list-table thead tr{
     overflow: auto; 
     max-height: 100px;  
     background-color: #ffffff;
-    margin-top: 20px;
 
 }
 /*/

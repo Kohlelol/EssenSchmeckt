@@ -7,10 +7,10 @@ import qrcode
 
 class Person(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person', null=True, blank=True, default=None)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=None, editable=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=30)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField(null=True, blank=True, default=None)
     qr_code = models.CharField(max_length=30)
     group_id = models.ForeignKey('group', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
     facility_id = models.ForeignKey('facility', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
@@ -22,8 +22,20 @@ class Person(models.Model):
     def __str__(self):
         return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id} {self.facility_id}"
     
+    def generate_uuids(self):
+        new_uuid = uuid.uuid4()
+        if new_uuid in Person.objects.values_list('id', flat=True):
+            self.generate_uuids()
+        return new_uuid  
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.id = self.generate_uuids()
+        super(Person, self).save(*args, **kwargs)
+
+
     def regenerate_UUID(self):
-        self.id = uuid.uuid4()
+        self.id = self.generate_uuids()
         self.save()
         self.generate_QR()
         return self.id
@@ -31,7 +43,7 @@ class Person(models.Model):
     def generate_QR(self):
         qr = qrcode.QRCode(
             version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,
             box_size=10,
             border=4,
         )
@@ -44,7 +56,7 @@ class Person(models.Model):
         self.save()
 
         return self.qr_code
-          
+
     
 class status(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='status')
@@ -127,3 +139,14 @@ class facility_manager(models.Model):
     def __str__(self):
         return f"{self.facility_id} {self.person_id}"
         
+class food_for_day(models.Model):
+    date = models.DateField()
+    food = models.IntegerField()
+    
+    class Meta:
+        unique_together = ('date', 'food')
+        verbose_name = "Food for day"
+        verbose_name_plural = "Food per day"
+    
+    def __str__(self):
+        return f"{self.date} {self.food}"
