@@ -23,13 +23,9 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(f'Group {group_name} does not exist'))
                 continue
 
-            facility_name = row['Bereich']
-            facility_instance = facility.objects.get(facility_name=facility_name)
-
             person = Person.objects.create(
                 first_name= row['Kürzel'].split('.')[-1],
                 last_name= row['Kürzel'].split('.')[0],
-                facility_id=facility_instance,
                 group_id=group_instance
             )
             persons.append(person)

@@ -13,14 +13,13 @@ class Person(models.Model):
     date_of_birth = models.DateField(null=True, blank=True, default=None)
     qr_code = models.CharField(max_length=30)
     group_id = models.ForeignKey('group', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
-    facility_id = models.ForeignKey('facility', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = "Person"
         verbose_name_plural = "People"
 
     def __str__(self):
-        return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id} {self.facility_id}"
+        return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id}"
     
     def generate_uuids(self):
         new_uuid = uuid.uuid4()

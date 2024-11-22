@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import *
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.db import IntegrityError
 # Create your views here.
 
 def group_required(*group_names):
@@ -50,9 +51,9 @@ def database_list(request):
     
     if query:
         persons = Person.objects.filter(
-            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids)
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids).order_by('last_name')
     else:
-        persons = Person.objects.filter(group_id__in=allowed_group_ids)
+        persons = Person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
 
     allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
 
@@ -67,9 +68,9 @@ def fetch_persons(request):
     
     if query:
         persons = Person.objects.filter(
-            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids)
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids).order_by('last_name')
     else:
-        persons = Person.objects.filter(group_id__in=allowed_group_ids)
+        persons = Person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
 
     allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
 
@@ -79,28 +80,52 @@ def fetch_persons(request):
 
 def attendance(request):
     query = request.GET.get('q', '')
+    logged_in_person = get_object_or_404(Person, user=request.user)
+    allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
+    
     if query:
-        logged_in_person = get_object_or_404(Person, user=request.user)
-        allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
         persons = Person.objects.filter(
-            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), 
-             group_id__in=allowed_group_ids
-             )
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids).order_by('last_name')
     else:
-        logged_in_person = get_object_or_404(Person, user=request.user)
-        allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
-        persons = Person.objects.filter(group_id__in=allowed_group_ids)
-    return render(request, 'database/attendance.html', {'person': persons})
+        persons = Person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
+
+    allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
+
+    return render(request, 'database/attendance.html', {'person': persons, 'groups': allowed_group_names})
 
 
 def daily_order(request):
     return render(request, 'database/daily_order.html')
 
 def edit_orders(request):
-    return render(request, 'database/edit_orders.html')
+    query = request.GET.get('q', '')
+    logged_in_person = get_object_or_404(Person, user=request.user)
+    allowed_facility_id = logged_in_person.group.facility_id()
+    allowed_group_ids = allowed_facility_id.groups.values_list('group_id', flat=True)
+
+    
+    if query:
+        persons = Person.objects.filter(
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids).order_by('last_name')
+    else:
+        persons = Person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
+
+    return render(request, 'database/edit_orders.html', {'person': persons})
 
 def order(request):
-    return render(request, 'database/order.html')
+    query = request.GET.get('q', '')
+    logged_in_person = get_object_or_404(Person, user=request.user)
+    allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
+    
+    if query:
+        persons = Person.objects.filter(
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids)
+    else:
+        persons = Person.objects.filter(group_id__in=allowed_group_ids)
+
+    allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
+
+    return render(request, 'database/order.html', {'person': persons, 'groups': allowed_group_names})
 
 def qr_code_scanner(request):
     return render(request, 'database/qr_code_scanner.html')
@@ -109,6 +134,34 @@ def setgroupleader(request):
     return render(request, 'database/setgroupleader.html')
 
 def setsubstitute(request):
-    return render(request, 'database/setsubstitute.html')
+    if request.method == 'POST':
+        group_id = request.POST.get('group_id')
+        person_id = request.POST.get('person_id')
+        try:
+            groupleader.objects.get(group_id=group_id, person_id=person_id)
+        except groupleader.DoesNotExist:
+            return render(request, 'database/setsubstitute.html', {'error': 'Group leader does not exist'})
+        
+        groupleader = groupleader.objects.create(group_id=group_id, person_id=person_id)
+        try:
+            groupleader.save()
+        except IntegrityError:
+            return render(request, 'database/setsubstitute.html', {'error': 'Integrity error: Duplicate entry'})
+        return render(request, 'database/setsubstitute.html', {'success': 'Substitute set'})
+    
+    query = request.GET.get('q', '')
+    logged_in_person = get_object_or_404(Person, user=request.user)
+    facility_id = logged_in_person.group.facility_id
+    all_groupleaders = groupleader.objects.filter(group_id__facility_id=facility_id).values_list('person_id', flat=True)
+
+    if query:
+        persons = Person.objects.filter(
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), id__in=all_groupleaders)
+    else:
+        persons = Person.objects.filter(id__in=all_groupleaders)
+
+    group_names = group.objects.filter(facility_id=facility_id).values_list('group_name', flat=True)
+    
+    return render(request, 'database/setsubstitute.html', {'person': persons, 'groups': group_names})
 
 
