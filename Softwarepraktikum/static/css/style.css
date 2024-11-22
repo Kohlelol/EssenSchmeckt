@@ -335,29 +335,128 @@ body.light-mode .breadcrumb-item:not(:last-child)::after {
 
 
 /*  styles for the table at database_list*/
-table {
-    width: 100%;
-    border-collapse: collapse;
+.database-list-table {
+    margin-left: 10px; /*seite sichtbar, nur für table design*/
+
 }
+
+
+.database-list-table table{
+    width: 50%;
+    border-collapse: collapse;
+    background-color: #1e1e24;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+} 
+.database-list-table table th , .database-list-table table td{
+    padding: 15px 20px;
+    text-align: left;
+    border-left: 2px solid rgb(19, 19, 19);
+
+}
+
+.database-list-table table td{
+    border-bottom: 1px solid #252427;
+    color: #e4e4f0;    
+}
+
+
+.database-list-table table th {
+    background-color: #3a3b42;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #a0a3bd;
+
+}
+
+.database-list-table table:has(th:nth-child(1):hover) td:nth-child(1), 
+.database-list-table table:has(th:nth-child(2):hover) td:nth-child(2){
+    background-color: #273849;
+
+}
+   
+.database-list-table table tr:hover {
+    background-color: #272836;
+    cursor: pointer;
+  }
+ 
+
+
+/*
+
+.database_list-real-table tr th {
+    background-color: rgb(75, 75, 75); 
+    border:1px solid #000000;
+    border-radius: 5px 5px 0 0;
+}
+.database-list-table{
+    margin: 20%;
+    width: auto;
+    background-color: blue;
+}
+
+.hurensohn{
+    background-color: blue;
+
+
+}
+
+.database_list-table {
+    width: 10%;
+    border-collapse: collapse;
+    margin-left: 30px;
+    overflow: hidden;
+    
+}
+
+.format123 text{
+    background-color: #66b3ff;
+    border: #fcfcfc;
+    width:50px ;
+    height: 50px;
+}
+
+    border-collapse: collapse;
+   
+   background-color: #ebe9e9;
+    margin-left: 30px;
+    border-radius: 5px 5px 0 0;
+   
+table.database_list-table thead tr{
+    background-color: #4e4e4e;
+    color: #3b3b3b;
+    text-align: left;
+
+}
+
+
  th, td {
     padding: 10px;
     border: 1px solid #ddd; 
     text-align: left;
  }
 
-.database_list-container{
-    margin-top: 20px;
+.database-list-head{
+    border-radius: 5px 5px 0 0;
+    background-color: #272727;
+
 }
+
+
+
+
 .database_list-table{
-    width: 100%;
-    max-width: auto; 
+    width: 20%;
+    max-width: 70px; 
     border: 1px solid #ccc;
     overflow: auto; 
     max-height: 100px;  
     background-color: #ffffff;
+    margin-top: 20px;
 
 }
-
+/*/
 
 
 
