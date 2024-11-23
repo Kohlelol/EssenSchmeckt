@@ -55,7 +55,7 @@ def database_list(request):
     else:
         persons = Person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
 
-    allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
+    allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids)
 
     return render(request, 'database/database_list.html', {'person': persons, 'groups': allowed_group_names})
 
@@ -63,21 +63,25 @@ def database_list(request):
 @group_required('groupleader')
 def fetch_persons(request):
     query = request.GET.get('q', '')
+    group_id = request.GET.get('group', '')
+
     logged_in_person = get_object_or_404(Person, user=request.user)
     allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
-    
     if query:
         persons = Person.objects.filter(
             (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids).order_by('last_name')
     else:
         persons = Person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
 
-    allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids).values_list('group_name', flat=True)
+    if group_id:
+        print(group_id)
+        persons = persons.filter(group_id=group_id)
 
-    return render(request, 'person_list.html', {'person': persons, 'groups': allowed_group_names})                                                          
+    return render(request, 'person_list.html', {'person': persons})                                                          
 
 
-
+@login_required(login_url='/users/login/')
+@group_required('groupleader')
 def attendance(request):
     query = request.GET.get('q', '')
     logged_in_person = get_object_or_404(Person, user=request.user)
@@ -112,6 +116,8 @@ def edit_orders(request):
 
     return render(request, 'database/edit_orders.html', {'person': persons})
 
+@login_required(login_url='/users/login/')
+@group_required('groupleader')
 def order(request):
     query = request.GET.get('q', '')
     logged_in_person = get_object_or_404(Person, user=request.user)

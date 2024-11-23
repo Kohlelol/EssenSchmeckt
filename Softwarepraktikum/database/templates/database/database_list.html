@@ -12,8 +12,15 @@
     <form id="search-form" method="get" action="{% url 'database:database_list' %}">
         <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}">
         <button type="submit">Search</button>
-    </form>
 
+        <label for="group-select">Select Group:</label>
+        <select id="group-select" name="group">
+            <option value="">All Groups</option>
+            {% for group in groups %}
+                <option value="{{ group.group_id }}"> {{ group.group_name }} </option>
+            {% endfor %}
+        </select>
+    </form>
     <table >
         <thead>
             <tr>
@@ -35,13 +42,14 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search-input');
+        const groupSelect = document.getElementById('group-select');
         const searchForm = document.getElementById('resultContainer');
     
-        searchInput.addEventListener('input', function() {
+        function fetchResults() {
             const query = searchInput.value;
-    
+            const group = groupSelect.value;
             // Send an AJAX request
-            fetch(`/database/fetch-persons/?q=${query}`, {
+            fetch(`/database/fetch-persons/?q=${encodeURIComponent(query)}&group=${encodeURIComponent(group)}`, {
                 method: 'GET',
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest',
@@ -53,7 +61,10 @@
                 searchForm.innerHTML = data;
             })
             .catch(error => console.error('Error:', error));
-        });
+        };
+        searchInput.addEventListener('input', fetchResults);
+        groupSelect.addEventListener('change', fetchResults);
+
     });
     </script>
 {% endblock %}
