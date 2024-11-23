@@ -1,1 +1,26 @@
 {% extends 'layout.html' %}
+
+{% block title %}QR Code Scanner{% endblock %}
+
+
+
+{% block content %}
+<video id="video" width="640" height="480" autoplay playsinline></video>
+<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+<button id="capture">Capture</button>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (async function() {
+    const video = document.getElementById('video');
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+    } catch (err) {
+        console.error("Error accessing camera: ", err);
+        alert("Unable to access the camera. Please check your device settings.");
+    }
+})();
+</script>
+{% endblock %}

@@ -101,6 +101,7 @@ def attendance(request):
 def daily_order(request):
     return render(request, 'database/daily_order.html')
 
+
 def edit_orders(request):
     query = request.GET.get('q', '')
     logged_in_person = get_object_or_404(Person, user=request.user)
@@ -115,6 +116,7 @@ def edit_orders(request):
         persons = Person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
 
     return render(request, 'database/edit_orders.html', {'person': persons})
+
 
 @login_required(login_url='/users/login/')
 @group_required('groupleader')
@@ -133,11 +135,14 @@ def order(request):
 
     return render(request, 'database/order.html', {'person': persons, 'groups': allowed_group_names})
 
+
 def qr_code_scanner(request):
     return render(request, 'database/qr_code_scanner.html')
 
+
 def setgroupleader(request):
     return render(request, 'database/setgroupleader.html')
+
 
 def setsubstitute(request):
     if request.method == 'POST':
@@ -166,8 +171,7 @@ def setsubstitute(request):
     else:
         persons = Person.objects.filter(id__in=all_groupleaders)
 
-    group_names = group.objects.filter(facility_id=facility_id).values_list('group_name', flat=True)
+    groups = group.objects.filter(facility_id=facility_id)
     
-    return render(request, 'database/setsubstitute.html', {'person': persons, 'groups': group_names})
-
+    return render(request, 'database/setsubstitute.html', {'groupleaders': persons, 'groups': groups})
 
