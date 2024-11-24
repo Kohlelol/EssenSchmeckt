@@ -11,7 +11,6 @@ class Person(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=30)
     date_of_birth = models.DateField(null=True, blank=True, default=None)
-    qr_code = models.CharField(max_length=30)
     group_id = models.ForeignKey('group', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
 
     class Meta:
@@ -19,7 +18,7 @@ class Person(models.Model):
         verbose_name_plural = "People"
 
     def __str__(self):
-        return f"{self.id} {self.first_name} {self.last_name} {self.date_of_birth} {self.qr_code} {self.group_id}"
+        return f"{self.last_name}, {self.first_name} | {self.date_of_birth} | {self.group_id.group_name}"
     
     def generate_uuids(self):
         new_uuid = uuid.uuid4()
@@ -50,11 +49,8 @@ class Person(models.Model):
         qr.add_data(self.id)
         qr.make(fit=True)
         img = qr.make_image(fill_color="black", back_color="white")
-        self.qr_code = img
 
-        self.save()
-
-        return self.qr_code
+        return img
 
     
 class status(models.Model):
@@ -68,7 +64,7 @@ class status(models.Model):
         verbose_name_plural = "Statuses"
     
     def __str__(self):
-        return f"{self.person.id} {self.status} {self.date}"
+        return f"{self.date} - {self.person.last_name}, {self.person.first_name} - {self.status} "
 
 
 class food(models.Model):
@@ -82,7 +78,7 @@ class food(models.Model):
         verbose_name_plural = "Food orders"
     
     def __str__(self):
-        return f"{self.person.id} {self.food} {self.date}"
+        return f"{self.date} | {self.person.last_name}, {self.person.first_name} -- {self.food}"
     
 
 class group(models.Model):
@@ -110,7 +106,7 @@ class groupleader(models.Model):
         verbose_name_plural = "Group leaders"
     
     def __str__(self):
-        return f"{self.group_id} {self.person_id}"
+        return f"{self.group.group_name} - {self.person.last_name}, {self.person.first_name}"
 
 
 class facility(models.Model):
@@ -123,7 +119,7 @@ class facility(models.Model):
         verbose_name_plural = "Facilities"
 
     def __str__(self):
-        return f"{self.facility_id} {self.facility_name} {self.facility_location}"
+        return f"{self.facility_name}"
 
 
 class facility_manager(models.Model):
@@ -136,8 +132,9 @@ class facility_manager(models.Model):
         verbose_name_plural = "Facility managers"
     
     def __str__(self):
-        return f"{self.facility_id} {self.person_id}"
+        return f"{self.facility.facility_name} - {self.person.last_name}, {self.person.first_name}"
         
+
 class food_for_day(models.Model):
     date = models.DateField()
     food = models.IntegerField()

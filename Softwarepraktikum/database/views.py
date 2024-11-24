@@ -4,6 +4,11 @@ from .models import *
 from django.contrib.auth.models import User
 from django.db.models import Q
 from django.db import IntegrityError
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 # Create your views here.
 
 def group_required(*group_names):
@@ -139,6 +144,41 @@ def order(request):
 def qr_code_scanner(request):
     return render(request, 'database/qr_code_scanner.html')
 
+# @csrf_exempt
+# def decode_qr(request):
+#     if request.method == 'POST':
+#         try:
+#             data = json.loads(request.body)
+#             qr_data = data.get('qr_data', '')
+#             # Process the QR code data as needed
+#             return render(request, 'database/decode_qr.html', {'success': True, 'qr_data': qr_data})
+#         except Exception as e:
+#             return render(request, 'database/decode_qr.html', {'success': False, 'qr_data': "Exceprion part"})
+#     return render(request, 'database/decode_qr.html', {'success': False, 'qr_data': 'Invalid request method'})
+
+@csrf_exempt
+def decode_qr(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            qr_data = data.get('qr_data', '')
+            if qr_data == '':
+                return render(request, 'database/decode_qr.html', {'success': False, 'error': 'No QR data found'})
+    
+            current_date = datetime.now().date()
+            person = Person.objects.get(id=qr_data)
+
+            food_instance = food.objects.filter(date=current_date, person=person).first()
+
+            if food_instance:
+                return render(request, 'database/decode_qr.html', {'success': True, 'food': food_instance.food})
+            else:
+                return render(request, 'database/decode_qr.html', {'success': True, 'food': 'No food order found for the given person and date'})
+
+        except Exception as e:
+            return render(request, 'database/decode_qr.html', {'success': False, 'error': str(e)})
+        
+    return render(request, 'database/decode_qr.html', {'success': False, 'error': 'Invalid request method'})
 
 def setgroupleader(request):
     return render(request, 'database/setgroupleader.html')

@@ -29,7 +29,6 @@
             </tr>
         </thead>
         <tbody id="resultContainer">
-            {% include 'person_list.html' %}
         </tbody>  
     </table>
 </div>
@@ -62,6 +61,8 @@
             })
             .catch(error => console.error('Error:', error));
         };
+        fetchResults();
+
         searchInput.addEventListener('input', fetchResults);
         groupSelect.addEventListener('change', fetchResults);
 

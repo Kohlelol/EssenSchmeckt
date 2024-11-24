@@ -7,13 +7,21 @@
 {% block content %}
 <video id="video" width="640" height="480" autoplay playsinline></video>
 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-<button id="capture">Capture</button>
+<div id="message" style="display:none;">OK</div>
+<div id="qr-result"></div>
+
 {% endblock %}
 
 {% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
 <script>
   (async function() {
     const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const message = document.getElementById('message');
+    const qrResult = document.getElementById('qr-result');
+    const context = canvas.getContext('2d');
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
@@ -21,6 +29,43 @@
         console.error("Error accessing camera: ", err);
         alert("Unable to access the camera. Please check your device settings.");
     }
+
+    function sendQRData(qrData) {
+        fetch('{% url "database:decode_qr" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ qr_data: qrData })
+        })
+        .then(response => response.text())
+        .then(data => {
+            qrResult.innerHTML = data;
+            message.style.display = 'block';
+            message.textContent = 'OK';
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function tick() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            canvas.height = video.videoHeight;
+            canvas.width = video.videoWidth;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "dontInvert",
+            });
+            if (code) {
+                sendQRData(code.data);
+                console.log('QR Code Data:', code.data);
+                // Video stream still continues even after QR code is detected
+            }
+        }
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
 })();
 </script>
 {% endblock %}
