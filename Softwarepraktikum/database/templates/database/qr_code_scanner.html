@@ -22,8 +22,11 @@
     const message = document.getElementById('message');
     const qrResult = document.getElementById('qr-result');
     const context = canvas.getContext('2d');
+    let clearTimeoutId;
+    let noQRTimeoutId;
+
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: {facingMode: 'environment'} });
         video.srcObject = stream;
     } catch (err) {
         console.error("Error accessing camera: ", err);
@@ -44,6 +47,18 @@
             qrResult.innerHTML = data;
             message.style.display = 'block';
             message.textContent = 'OK';
+
+            if (clearTimeoutId) {
+               clearTimeout(clearTimeoutId);
+            }
+            if (noQRTimeoutId) {
+                clearTimeout(noQRTimeoutId);
+            }
+
+           clearTimeoutId = setTimeout(() => {
+               qrResult.innerHTML = '';
+               message.style.display = 'none';
+           }, 30000);
         })
         .catch(error => console.error('Error:', error));
     }
@@ -61,6 +76,15 @@
                 sendQRData(code.data);
                 console.log('QR Code Data:', code.data);
                 // Video stream still continues even after QR code is detected
+
+                if (noQRTimeoutId) {
+                    clearTimeout(noQRTimeoutId);
+                }
+
+                noQRTimeoutId = setTimeout(() => {
+                    qrResult.innerHTML = '';
+                    message.style.display = 'none';
+                }, 2000); 
             }
         }
         requestAnimationFrame(tick);

@@ -18,7 +18,7 @@ class Person(models.Model):
         verbose_name_plural = "People"
 
     def __str__(self):
-        return f"{self.last_name}, {self.first_name} | {self.date_of_birth} | {self.group_id.group_name}"
+        return f"{self.last_name}, {self.first_name} | {self.date_of_birth} | {self.group_id.group_name} ------ {self.id}"
     
     def generate_uuids(self):
         new_uuid = uuid.uuid4()

@@ -7,7 +7,6 @@ from django.db import IntegrityError
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 # Create your views here.
 
@@ -171,9 +170,9 @@ def decode_qr(request):
             food_instance = food.objects.filter(date=current_date, person=person).first()
 
             if food_instance:
-                return render(request, 'database/decode_qr.html', {'success': True, 'food': food_instance.food})
+                return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': food_instance.food})
             else:
-                return render(request, 'database/decode_qr.html', {'success': True, 'food': 'No food order found for the given person and date'})
+                return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': 'No food order found for the given person and date'})
 
         except Exception as e:
             return render(request, 'database/decode_qr.html', {'success': False, 'error': str(e)})
