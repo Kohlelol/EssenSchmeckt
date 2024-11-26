@@ -5,14 +5,60 @@
 
 
 {% block content %}
-<video id="video" width="640" height="480" autoplay playsinline></video>
-<canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-<div id="message" style="display:none;">OK</div>
-<div id="qr-result"></div>
+<div class="container">
+    <div class="video-container">
+        <video id="video" width="640" height="480" autoplay playsinline></video>
+        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+        <div id="message" class="message-box">OK</div>
+    </div>
+    <div id="qr-result" class="qr-result" style="display:none;"></div>
+</div>
 
 {% endblock %}
 
 {% block scripts %}
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 75px;
+    }
+    .video-container {
+        position: relative;
+        display: block;
+        justify-content: center;
+        align-items: center;
+    }
+    video {
+        border: 2px solid #000;
+    }
+    .message-box {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: green;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        display: none;
+        width: 200px;
+        height: 100px;
+        text-align: center;
+        font-size: 20px;
+        justify-content: center;
+        align-items: center;
+    }
+    .message-box.error {
+        background-color: red;
+    }
+
+    .qr-result {
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 
 <script>
@@ -45,20 +91,27 @@
         .then(response => response.text())
         .then(data => {
             qrResult.innerHTML = data;
-            message.style.display = 'block';
-            message.textContent = 'OK';
+            qrResult.style.display = 'block';
+            message.style.display = 'flex';
+            if (data.includes('qr-error')) {
+                message.textContent = 'Invalid or no QR data detected';
+                message.classList.add('error');
+            } else {
+                message.classList.remove('error');
+                message.textContent = 'OK';
 
-            if (clearTimeoutId) {
-               clearTimeout(clearTimeoutId);
+                if (clearTimeoutId) {
+                    clearTimeout(clearTimeoutId);
+                 }
+                 if (noQRTimeoutId) {
+                     clearTimeout(noQRTimeoutId);
+                 }
+     
+                clearTimeoutId = setTimeout(() => {
+                    qrResult.innerHTML = '';
+                    message.style.display = 'none';
+                }, 30000);
             }
-            if (noQRTimeoutId) {
-                clearTimeout(noQRTimeoutId);
-            }
-
-           clearTimeoutId = setTimeout(() => {
-               qrResult.innerHTML = '';
-               message.style.display = 'none';
-           }, 30000);
         })
         .catch(error => console.error('Error:', error));
     }
