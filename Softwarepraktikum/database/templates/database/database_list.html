@@ -12,16 +12,18 @@
 
   <div class="database-list-container">
     <form id="search-form" method="get" action="{% url 'database:database_list' %}">
-      <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}" />
-      <button type="submit">Search</button>
+      <div class="form-row">
+        <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}" class="input-field" />
+        <!-- <button type="submit" class="search-button">Search</button> -->
 
-      <label for="group-select">Select Group:</label>
-      <select id="group-select" name="group">
-        <option value="">All Groups</option>
-        {% for group in groups %}
-          <option value="{{ group.group_id }}">{{ group.group_name }}</option>
-        {% endfor %}
-      </select>
+        <label for="group-select" class="select-group-label">Select Group:</label>
+        <select id="group-select" name="group" class="select-field">
+          <option value="">All Groups</option>
+          {% for group in groups %}
+            <option value="{{ group.group_id }}">{{ group.group_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
     </form>
     <div class="database-list-table">
       <table>

@@ -348,6 +348,8 @@
         }
 
 
+        /* Styles for tables currently on database_list.html */
+
 
         .database-list-container {
             display: flex;
@@ -355,12 +357,56 @@
             align-items: center;
             width: 100%;
         }
-
+        
         #search-form {
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 10px;
+        }
+        
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 10%;
+        }
+        
+        .select-group-label {
+            white-space: nowrap;
+            word-wrap: break-word;
+            margin-right: 10px;
+        }
+
+        .input-field, .select-field {
+            width: 60vh;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus, .select-field:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+        
+        .search-button {
+            width: 150px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        .search-button:hover {
+            background-color: #0056b3;
         }
 
 
@@ -372,7 +418,7 @@
         }
 
         .database-list-table table {
-            width: 50%;
+            width: 80%;
             border-collapse: collapse;
             background-color: #1e1e24;
             border-radius: 10px;
@@ -389,6 +435,7 @@
 
         .database-list-table table td {
             border-bottom: 1px solid #252427;
+            text-align: left;
             color: #e4e4f0;
         }
 
@@ -396,6 +443,7 @@
             background-color: #3a3b42;
             font-weight: bold;
             text-transform: uppercase;
+            text-align: center;
             color: #a0a3bd;
         }
 
