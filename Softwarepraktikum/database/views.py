@@ -50,8 +50,12 @@ def get_duplicate_persons():
 @group_required('groupleader')
 def database_list(request):
     query = request.GET.get('q', '')
-    logged_in_person = get_object_or_404(Person, user=request.user)
-    allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
+    
+    if request.user.is_superuser:
+        allowed_group_ids = group.objects.values_list('group_id', flat=True)
+    else:
+        logged_in_person = get_object_or_404(Person, user=request.user)
+        allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
     
     if query:
         persons = Person.objects.filter(
@@ -68,9 +72,13 @@ def database_list(request):
 def fetch_persons(request):
     query = request.GET.get('q', '')
     group_id = request.GET.get('group', '')
-
-    logged_in_person = get_object_or_404(Person, user=request.user)
-    allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
+    
+    if request.user.is_superuser:
+        allowed_group_ids = group.objects.values_list('group_id', flat=True)
+    else:
+        logged_in_person = get_object_or_404(Person, user=request.user)
+        allowed_group_ids = logged_in_person.group_leaderships.values_list('group_id', flat=True)
+    
     if query:
         persons = Person.objects.filter(
             (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids).order_by('last_name')
@@ -81,7 +89,7 @@ def fetch_persons(request):
         print(group_id)
         persons = persons.filter(group_id=group_id)
 
-    return render(request, 'person_list.html', {'person': persons})                                                          
+    return render(request, 'database/person_list.html', {'person': persons})                                                          
 
 
 @login_required(login_url='/users/login/')
@@ -109,8 +117,11 @@ def daily_order(request):
 def edit_orders(request):
     query = request.GET.get('q', '')
     logged_in_person = get_object_or_404(Person, user=request.user)
-    allowed_facility_id = logged_in_person.group.facility_id()
-    allowed_group_ids = allowed_facility_id.groups.values_list('group_id', flat=True)
+    if request.user.is_superuser:
+        allowed_group_ids = group.objects.values_list('group_id', flat=True)
+    else:
+        allowed_facility_id = logged_in_person.group.facility_id()
+        allowed_group_ids = allowed_facility_id.groups.values_list('group_id', flat=True)
 
     
     if query:
@@ -168,8 +179,9 @@ def decode_qr(request):
             person = Person.objects.get(id=qr_data)
 
             food_instance = food.objects.filter(date=current_date, person=person).first()
-
             if food_instance:
+                if food_instance.served:
+                    return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': 'Food already served for the given person and date'})
                 return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': food_instance.food})
             else:
                 return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': 'No food order found for the given person and date'})

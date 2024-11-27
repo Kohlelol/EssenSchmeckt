@@ -1,388 +1,417 @@
         /* Default styles for dark mode */
 
-* {
-    padding: 0%;
-    margin: 0%;
-}
+        * {
+            padding: 0%;
+            margin: 0%;
+        }
 
-body {
-    font-family: Arial, sans-serif;
-    background-color: #181818;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    transition: background-color 0.3s, color 0.3s;
-    display: none;
-}
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-.login-form {
-    background-color: #2c2c2c;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-h2 {
-    margin-bottom: 20px;
-    color: #ffffff;
-}
-label {
-    margin: 5px 0;
-    font-weight: bold;
-    color: #ffffff;
-    display: block;
-}
-.input-field {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border: 2px solid #007bff;
-    border-radius: 5px;
-    box-sizing: border-box;
-    transition: border-color 0.3s;
-}
-.input-field:focus {
-    border-color: #0056b3;
-    outline: none;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #181818;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+            display: none;
+        }
 
-.login-submit-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-top: 15px;
-}
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-.login-submit-button:hover {
-    background-color: #0056b3;
-}
+        .login-form {
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
 
-.forgot-password {
-    margin-top: 20px;
-    color: #66b3ff;
-    text-decoration: none;
-    font-size: 14px;
-    display: inline-block;
-}
-.forgot-password:hover {
-    text-decoration: underline;
-}
+        h2 {
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
 
-/* Additional CSS for Breadcrumb */
-.breadcrumb {
-    display: flex;
-    align-items: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    position: relative;
-}
+        label {
+            margin: 5px 0;
+            font-weight: bold;
+            color: #ffffff;
+            display: block;
+        }
 
-.breadcrumb-item {
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    position: relative;
-    margin-right: -13px; /* Overlap effect */
-    z-index: 1; /* Ensure it overlaps */
-    transition: background-color 0.3s ease;
-    /* clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0 50%); */
-    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
-}
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
 
-.breadcrumb-item:first-child {
-    clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
-    margin-left: -15px;
-}
+        .input-field:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
 
-.breadcrumb-item:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
+        .login-submit-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
 
-.breadcrumb-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    right: -15px; /* Position the arrow */
-    width: 0;
-    height: 0;
-    border-left: 15px solid #007bff; /* Color of the arrow */
-    border-top: 7.5px solid transparent;
-    border-bottom: 7.5px solid transparent;
-    transform: translateY(-50%);
-}
+        .login-submit-button:hover {
+            background-color: #0056b3;
+        }
 
-.switch {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-.switch input {
-    display: none;
-}
-.slider {
-    width: 34px;
-    height: 20px;
-    background-color: #ccc;
-    border-radius: 34px;
-    position: relative;
-    transition: background-color 0.4s;
-}
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    border-radius: 50%;
-    transition: transform 0.4s;
-}
-input:checked + .slider {
-    background-color: #007bff;
-}
+        .forgot-password {
+            margin-top: 20px;
+            color: #66b3ff;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+        }
 
-input:checked + .slider:before {
-    transform: translateX(14px);
-}
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
 
+        /* Additional CSS for Breadcrumb */
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
 
-/* Style for the top-right settings area */
+        .breadcrumb-item {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            position: relative;
+            margin-right: -13px;
+            /* Overlap effect */
+            z-index: 1;
+            /* Ensure it overlaps */
+            transition: background-color 0.3s ease;
+            /* clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 15px 100%, 0 50%); */
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%, 15px 50%);
+        }
 
-.top-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50px;
-    background-color: #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: left;
-    padding: 0 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+        .breadcrumb-item:first-child {
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
+            margin-left: -15px;
+        }
 
-}
+        .breadcrumb-item:hover {
+            background-color: #0056b3;
+            /* Darker blue on hover */
+        }
 
-.top-right {
-    position: relative;
-    top: -7px;
-    right: 10px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
+        .breadcrumb-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -15px;
+            /* Position the arrow */
+            width: 0;
+            height: 0;
+            border-left: 15px solid #007bff;
+            /* Color of the arrow */
+            border-top: 7.5px solid transparent;
+            border-bottom: 7.5px solid transparent;
+            transform: translateY(-50%);
+        }
 
-.logout-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-top: 15px;
-}
+        .switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
 
-.logout-button img {
-    cursor: pointer;
-    width: 20px;
-    height: 20px;
-    transition: transform 0.3s ease;
-}
+        .switch input {
+            display: none;
+        }
 
-.logout-button:hover {
-    transform: scale(1.1);
-}
+        .slider {
+            width: 34px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 34px;
+            position: relative;
+            transition: background-color 0.4s;
+        }
 
-/* Style for the dark mode toggle */
-.settings-container {
-    position: relative;
-    display: inline-block;
-}
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.4s;
+        }
 
-.settings-container input {
-    display: none;
-}
+        input:checked+.slider {
+            background-color: #007bff;
+        }
 
-.dark-mode-toggle-button {
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-top: 15px;
-}
-
-.dark-mode-toggle-button img {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.dark-mode-toggle-button:hover {
-    transform: scale(1.1);
-}
-
-/* Style for the center-box at select.html */
-
-.center-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.select-box {
-    background-color: #2c2c2c;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-
-/* Redirect button styles */
-.redirect-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-    margin-top: 15px;
-}
-
-.redirect-button:first-child {
-    margin-top: 0px;
-}
+        input:checked+.slider:before {
+            transform: translateX(14px);
+        }
 
 
-.redirect-button:hover {
-    background-color: #0056b3;
-}
+        /* Style for the top-right settings area */
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: left;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+
+        }
+
+        .top-right {
+            position: relative;
+            top: -7px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logout-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+
+        .logout-button img {
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .logout-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Style for the dark mode toggle */
+        .settings-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .settings-container input {
+            display: none;
+        }
+
+        .dark-mode-toggle-button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+
+        .dark-mode-toggle-button img {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .dark-mode-toggle-button:hover {
+            transform: scale(1.1);
+        }
+
+        /* Style for the center-box at select.html */
+
+        .center-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .select-box {
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        /* Redirect button styles */
+        .redirect-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+
+        .redirect-button:first-child {
+            margin-top: 0px;
+        }
 
 
-
-
-
-
-
-
-
-/* Light mode styles */
-
-body.light-mode {
-    background-color: #f0f2f5;
-    color: #333;
-}
-
-body.light-mode .login-form {
-    background-color: #ffffff;
-}
-
-body.light-mode h2,
-body.light-mode label {
-    color: #333;
-}
-
-body.light-mode .forgot-password {
-    color: #007bff;
-}
-
-body.light-mode .breadcrumb {
-    background-color: transparent;
-    color: #007bff;
-}
-
-body.light-mode .breadcrumb-item {
-    background-color: #007bff;
-    color: black;
-    outline-color: transparent;
-}
-
-body.light-mode .breadcrumb-item:not(:last-child)::after {
-    border-left-color: #f0f2f5;
-}
+        .redirect-button:hover {
+            background-color: #0056b3;
+        }
 
 
 
-/*  styles for the table at database_list*/
-.database-list-table {
-    margin-left: 10px; /*seite sichtbar, nur für table design*/
-
-}
 
 
-.database-list-table table{
-    width: 50%;
-    border-collapse: collapse;
-    background-color: #1e1e24;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-} 
-.database-list-table table th , .database-list-table table td{
-    padding: 15px 20px;
-    text-align: left;
-    border-left: 2px solid rgb(19, 19, 19);
-
-}
-
-.database-list-table table td{
-    border-bottom: 1px solid #252427;
-    color: #e4e4f0;    
-}
 
 
-.database-list-table table th {
-    background-color: #3a3b42;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #a0a3bd;
-
-}
-
-.database-list-table table:has(th:nth-child(1):hover) td:nth-child(1), 
-.database-list-table table:has(th:nth-child(2):hover) td:nth-child(2){
-    background-color: #273849;
-
-}
-   
-.database-list-table table tr:hover {
-    background-color: #272836;
-    cursor: pointer;
-  }
- 
 
 
-/*
+        /* Light mode styles */
+
+        body.light-mode {
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        body.light-mode .login-form {
+            background-color: #ffffff;
+        }
+
+        body.light-mode h2,
+        body.light-mode label {
+            color: #333;
+        }
+
+        body.light-mode .forgot-password {
+            color: #007bff;
+        }
+
+        body.light-mode .breadcrumb {
+            background-color: transparent;
+            color: #007bff;
+        }
+
+        body.light-mode .breadcrumb-item {
+            background-color: #007bff;
+            color: black;
+            outline-color: transparent;
+        }
+
+        body.light-mode .breadcrumb-item:not(:last-child)::after {
+            border-left-color: #f0f2f5;
+        }
+
+
+
+        .database-list-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #search-form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+
+        /* Styles for the table at database_list */
+        .database-list-table {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .database-list-table table {
+            width: 50%;
+            border-collapse: collapse;
+            background-color: #1e1e24;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .database-list-table table th,
+        .database-list-table table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-left: 2px solid rgb(19, 19, 19);
+        }
+
+        .database-list-table table td {
+            border-bottom: 1px solid #252427;
+            color: #e4e4f0;
+        }
+
+        .database-list-table table th {
+            background-color: #3a3b42;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #a0a3bd;
+        }
+
+        .database-list-table table:has(th:nth-child(1):hover) td:nth-child(1),
+        .database-list-table table:has(th:nth-child(2):hover) td:nth-child(2) {
+            background-color: #273849;
+        }
+
+        .database-list-table table tr:hover {
+            background-color: #272836;
+            cursor: pointer;
+        }
+
+
+
+        /*
 
 .database_list-real-table tr th {
     background-color: rgb(75, 75, 75); 
@@ -455,7 +484,3 @@ table.database_list-table thead tr{
 
 }
 /*/
-
-
-
-

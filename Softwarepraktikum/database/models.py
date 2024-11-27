@@ -6,12 +6,12 @@ import qrcode
 # Create your models here.
 
 class Person(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person', null=True, blank=True, default=None)
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, related_name='person', null=True, blank=True, default=None)
     id = models.UUIDField(primary_key=True, default=None, editable=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=30)
     date_of_birth = models.DateField(null=True, blank=True, default=None)
-    group_id = models.ForeignKey('group', on_delete=models.CASCADE, related_name='persons', null=True, blank=True, default=None)
+    group_id = models.ForeignKey('group', on_delete=models.SET_NULL, related_name='persons', null=True, blank=True, default=None)
 
     class Meta:
         verbose_name = "Person"
@@ -52,25 +52,13 @@ class Person(models.Model):
 
         return img
 
-    
-class status(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='status')
-    status = models.CharField(max_length=10)
-    date = models.DateField()
-    
-    class Meta:
-        unique_together = ('person', 'date')
-        verbose_name = "Status"
-        verbose_name_plural = "Statuses"
-    
-    def __str__(self):
-        return f"{self.date} - {self.person.last_name}, {self.person.first_name} - {self.status} "
-
 
 class food(models.Model):
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='food')
+    person = models.ForeignKey(Person, on_delete=models.SET_NULL, related_name='food', null=True)
     food = models.IntegerField()
     date = models.DateField()
+    locked = models.BooleanField(default=False)
+    served = models.BooleanField(default=False)
     
     class Meta:
         unique_together = ('person', 'date')
@@ -78,14 +66,14 @@ class food(models.Model):
         verbose_name_plural = "Food orders"
     
     def __str__(self):
-        return f"{self.date} | {self.person.last_name}, {self.person.first_name} -- {self.food}"
+        return f"{self.date} | {self.person.last_name}, {self.person.first_name} -- {self.food} Served:{self.served}"
     
 
 class group(models.Model):
     group_id = models.AutoField(primary_key=True)
     group_name = models.CharField(max_length=30)
     task = models.CharField(max_length=100)
-    facility_id = models.ForeignKey('facility', on_delete=models.CASCADE, related_name='groups')
+    facility_id = models.ForeignKey('facility', on_delete=models.SET_NULL, related_name='groups', null=True)
 
     class Meta:
         verbose_name = "Group"
@@ -97,8 +85,9 @@ class group(models.Model):
 
 
 class groupleader(models.Model):
-    group = models.ForeignKey(group, on_delete=models.CASCADE, related_name='group_leader')
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='group_leaderships')
+    group = models.ForeignKey(group, on_delete=models.SET_NULL, related_name='group_leader', null=True)
+    person = models.ForeignKey(Person, on_delete=models.SET_NULL, related_name='group_leaderships', null=True)
+    expires = models.DateField(null=True, blank=True, default=None)
     
     class Meta:
         unique_together = ('group_id', 'person_id')
@@ -123,8 +112,8 @@ class facility(models.Model):
 
 
 class facility_manager(models.Model):
-    facility = models.ForeignKey(facility, on_delete=models.CASCADE, related_name='facility_manager')
-    person = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='facility_managements')
+    facility = models.ForeignKey(facility, on_delete=models.SET_NULL, related_name='facility_manager', null=True)
+    person = models.ForeignKey(Person, on_delete=models.SET_NULL, related_name='facility_managements', null=True)
     
     class Meta:
         unique_together = ('facility_id', 'person_id')
@@ -134,15 +123,3 @@ class facility_manager(models.Model):
     def __str__(self):
         return f"{self.facility.facility_name} - {self.person.last_name}, {self.person.first_name}"
         
-
-class food_for_day(models.Model):
-    date = models.DateField()
-    food = models.IntegerField()
-    
-    class Meta:
-        unique_together = ('date', 'food')
-        verbose_name = "Food for day"
-        verbose_name_plural = "Food per day"
-    
-    def __str__(self):
-        return f"{self.date} {self.food}"
