@@ -65,6 +65,9 @@ def database_list(request):
 
     allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids)
 
+    for person in persons:
+        person.food_for_today = person.get_food_for_today()
+
     return render(request, 'database/database_list.html', {'person': persons, 'groups': allowed_group_names})
 
 @login_required(login_url='/users/login/')
@@ -89,7 +92,40 @@ def fetch_persons(request):
         print(group_id)
         persons = persons.filter(group_id=group_id)
 
+    for person in persons:
+        person.food_for_today = person.get_food_for_today()
+        if person.food_for_today:
+            print(person.food_for_today.food)
+
     return render(request, 'database/person_list.html', {'person': persons})                                                          
+
+@login_required(login_url='/users/login/')
+@csrf_exempt
+def set_food(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            person_id = data.get('person_id')
+            food_value = data.get('food_value')
+            person = get_object_or_404(Person, id=person_id)
+            current_date = datetime.now().date()
+            
+            if int(food_value) == 1:
+                food_instance = food.objects.filter(person=person, date=current_date).first()
+                if food_instance:
+                    food_instance.delete()
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({'success': False, 'error': 'Food order not found for the given person and date'})
+            else:
+                food_instance, created = food.objects.get_or_create(person=person, date=current_date)
+                food_instance.food = food_value
+                food_instance.save()
+            
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
 @login_required(login_url='/users/login/')

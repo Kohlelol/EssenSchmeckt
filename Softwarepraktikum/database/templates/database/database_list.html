@@ -13,7 +13,7 @@
   <div class="database-list-container">
     <form id="search-form" method="get" action="{% url 'database:database_list' %}">
       <div class="form-row">
-        <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}" class="input-field" />
+        <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}" class="input-field-table" />
         <!-- <button type="submit" class="search-button">Search</button> -->
 
         <label for="group-select" class="select-group-label">Select Group:</label>
@@ -31,6 +31,7 @@
           <tr>
             <th>Name</th>
             <th>Vorname</th>
+            <th>Essen</th>
           </tr>
         </thead>
         <tbody id="resultContainer"></tbody>
@@ -70,5 +71,31 @@
       searchInput.addEventListener('input', fetchResults)
       groupSelect.addEventListener('change', fetchResults)
     })
+  </script>
+  <script>
+    function updateFood(selectElement, personId) {
+      const selectedValue = selectElement.value;
+  
+      fetch('set_food/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+          person_id: personId,
+          food_value: selectedValue
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log('Food updated successfully');
+        } else {
+          console.error('Error updating food:', data.error);
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
   </script>
 {% endblock %}

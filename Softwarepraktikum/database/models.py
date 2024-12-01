@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import uuid
 import qrcode
+from datetime import datetime
 
 # Create your models here.
 
@@ -52,10 +53,14 @@ class Person(models.Model):
 
         return img
 
+    def get_food_for_today(self):
+        current_date = datetime.now().date()
+        return food.objects.filter(person=self, date=current_date).first()
+
 
 class food(models.Model):
     person = models.ForeignKey(Person, on_delete=models.SET_NULL, related_name='food', null=True)
-    food = models.IntegerField()
+    food = models.IntegerField(null=True, blank=True, default=1)
     date = models.DateField()
     locked = models.BooleanField(default=False)
     served = models.BooleanField(default=False)

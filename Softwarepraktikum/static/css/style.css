@@ -378,7 +378,7 @@
             margin-right: 10px;
         }
 
-        .input-field, .select-field {
+        .input-field-table, .select-field {
             width: 60vh;
             padding: 10px;
             margin: 5px 0;
@@ -388,7 +388,7 @@
             transition: border-color 0.3s;
         }
         
-        .input-field:focus, .select-field:focus {
+        .input-field-table:focus, .select-field:focus {
             border-color: #0056b3;
             outline: none;
         }

@@ -2,9 +2,18 @@
   <tr>
     <td>{{ person.last_name }}</td>
     <td>{{ person.first_name }}</td>
+    <td>
+      <select id={{ person.id }} name="foodselect" class="select-food" onchange="updateFood(this, '{{ person.id }}')"> 
+        <option value="1" {% if not person.food_for_today %}selected{% endif %}>Nothing</option>
+        <option value="2" {% if person.food_for_today and person.food_for_today.food == 2 %}selected{% endif %}>Red</option>
+        <option value="3" {% if person.food_for_today and person.food_for_today.food == 3 %}selected{% endif %}>Blue</option>
+      </select>
+    </td>
   </tr>
 {% empty %}
   <tr>
     <td colspan="2">No persons found.</td>
   </tr>
 {% endfor %}
+
+

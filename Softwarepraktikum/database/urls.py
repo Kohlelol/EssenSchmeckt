@@ -15,4 +15,5 @@ urlpatterns = [
     path('setsubstitute/', views.setsubstitute, name='setsubstitute'),
     path('fetch-persons/', views.fetch_persons, name='fetch_persons'),
     path('decode_qr/', views.decode_qr, name='decode_qr'),
+    path('set_food/', views.set_food, name='set_food'),
 ]
