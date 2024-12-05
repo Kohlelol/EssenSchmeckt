@@ -364,12 +364,15 @@
             flex-direction: column;
             align-items: center;
             gap: 10px;
+            width: 100%;
+           
         }
         
         .form-row {
             display: flex;
             align-items: center;
             gap: 10%;
+            width: 80%;
         }
         
         .select-group-label {
@@ -448,7 +451,8 @@
         }
 
         .database-list-table table:has(th:nth-child(1):hover) td:nth-child(1),
-        .database-list-table table:has(th:nth-child(2):hover) td:nth-child(2) {
+        .database-list-table table:has(th:nth-child(2):hover) td:nth-child(2),
+        .database-list-table table:has(th:nth-child(3):hover) td:nth-child(3)  {
             background-color: #273849;
         }
 
@@ -458,5 +462,58 @@
         }
 
 
+        /* Styles for select at person_list */
+        
+        
+        .select-food-container{
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
 
-    
+     
+
+        .select-food-container::after{
+            content: "▼";
+            position: absolute;
+            top: 55%;
+            right: 10px;
+            transform: translateY(-55%);
+            pointer-events: none;
+            font-size: 17px;
+            color: #888;
+            
+        }
+
+        .select-food{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: #1e1e1e; 
+            font-size: 16px;
+            color: #e0e0e0;
+            cursor: pointer;
+            appearance: none;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+        }
+
+
+        .select-food:focus{
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            background-color: #25242c;
+            border-radius: 6px 6px 0 0
+        }
+        
+        .select-food option{
+            background: #37354b;
+            color: #e0e0e0;
+        }
+
+        
+        .select-food :nth-child(4){
+            border-radius: 0 0 6px 6px;
+
+        }
