@@ -48,21 +48,21 @@
             width: 100%;
             padding: 10px;
             margin: 5px 0;
-            border: 2px solid #007bff;
+            border: 2px solid #0474bc;
             border-radius: 5px;
             box-sizing: border-box;
             transition: border-color 0.3s;
         }
 
         .input-field:focus {
-            border-color: #0056b3;
+            border-color: #0474bc;
             outline: none;
         }
 
         .login-submit-button {
             width: 100%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #0474bc;
             color: white;
             border: none;
             border-radius: 5px;
@@ -73,7 +73,7 @@
         }
 
         .login-submit-button:hover {
-            background-color: #0056b3;
+            background-color: #0474bc;
         }
 
         .forgot-password {
@@ -99,7 +99,7 @@
         }
 
         .breadcrumb-item {
-            background-color: #007bff;
+            background-color: #0474bc;
             color: #ffffff;
             padding: 10px 20px;
             border-radius: 8px;
@@ -119,7 +119,7 @@
         }
 
         .breadcrumb-item:hover {
-            background-color: #0056b3;
+            background-color: #0474bc;
             /* Darker blue on hover */
         }
 
@@ -131,7 +131,7 @@
             /* Position the arrow */
             width: 0;
             height: 0;
-            border-left: 15px solid #007bff;
+            border-left: 15px solid #0474bc;
             /* Color of the arrow */
             border-top: 7.5px solid transparent;
             border-bottom: 7.5px solid transparent;
@@ -173,7 +173,7 @@
         }
 
         input:checked+.slider {
-            background-color: #007bff;
+            background-color: #0474bc;
         }
 
         input:checked+.slider:before {
@@ -196,6 +196,7 @@
             padding: 0 20px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             z-index: 1000;
+            font-weight: bold;
 
         }
 
@@ -210,7 +211,7 @@
 
         .logout-button {
             padding: 10px;
-            background-color: #007bff;
+            background-color: #0474bc;
             color: white;
             border: none;
             border-radius: 5px;
@@ -242,7 +243,7 @@
 
         .dark-mode-toggle-button {
             padding: 10px;
-            background-color: #007bff;
+            background-color: #0474bc;
             color: white;
             border: none;
             border-radius: 5px;
@@ -285,7 +286,7 @@
         .redirect-button {
             width: 100%;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #0474bc;
             color: white;
             border: none;
             border-radius: 5px;
@@ -301,14 +302,8 @@
 
 
         .redirect-button:hover {
-            background-color: #0056b3;
+            background-color: #0474bc;
         }
-
-
-
-
-
-
 
 
 
@@ -325,21 +320,21 @@
 
         body.light-mode h2,
         body.light-mode label {
-            color: #333;
+            color: #000000;
         }
 
         body.light-mode .forgot-password {
-            color: #007bff;
+            color: #0474bc;
         }
 
         body.light-mode .breadcrumb {
             background-color: transparent;
-            color: #007bff;
+            color: #0474bc;
         }
 
         body.light-mode .breadcrumb-item {
-            background-color: #007bff;
-            color: black;
+            background-color: #0474bc;
+            color: rgb(255, 255, 255);
             outline-color: transparent;
         }
 
@@ -347,6 +342,22 @@
             border-left-color: #f0f2f5;
         }
 
+        body.light-mode        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: #9cccfc;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: left;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+
+        }
 
         /* Styles for tables currently on database_list.html */
 
@@ -385,21 +396,21 @@
             width: 60vh;
             padding: 10px;
             margin: 5px 0;
-            border: 2px solid #007bff;
+            border: 2px solid #0474bc;
             border-radius: 5px;
             box-sizing: border-box;
             transition: border-color 0.3s;
         }
         
         .input-field-table:focus, .select-field:focus {
-            border-color: #0056b3;
+            border-color: #0474bc;
             outline: none;
         }
         
         .search-button {
             width: 150px;
             padding: 10px;
-            background-color: #007bff;
+            background-color: #0474bc;
             color: white;
             border: none;
             border-radius: 5px;
@@ -409,7 +420,7 @@
         }
         
         .search-button:hover {
-            background-color: #0056b3;
+            background-color: #0474bc;
         }
 
 
@@ -423,7 +434,7 @@
         .database-list-table table {
             width: 80%;
             border-collapse: collapse;
-            background-color: #1e1e24;
+            background-color: #9cccfc;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -439,25 +450,25 @@
         .database-list-table table td {
             border-bottom: 1px solid #252427;
             text-align: left;
-            color: #e4e4f0;
+            color: #000000;
         }
 
         .database-list-table table th {
-            background-color: #3a3b42;
+            background-color: #34649c;
             font-weight: bold;
             text-transform: uppercase;
             text-align: center;
-            color: #a0a3bd;
+            color: #9cccfc;
         }
 
         .database-list-table table:has(th:nth-child(1):hover) td:nth-child(1),
         .database-list-table table:has(th:nth-child(2):hover) td:nth-child(2),
         .database-list-table table:has(th:nth-child(3):hover) td:nth-child(3)  {
-            background-color: #273849;
+            background-color: #759fca;
         }
 
         .database-list-table table tr:hover {
-            background-color: #272836;
+            background-color: #759fca;
             cursor: pointer;
         }
 
@@ -481,7 +492,7 @@
             transform: translateY(-55%);
             pointer-events: none;
             font-size: 17px;
-            color: #888;
+            color: #ffffff;
             
         }
 
@@ -490,9 +501,9 @@
             padding: 10px;
             border: 1px solid #333;
             border-radius: 6px;
-            background: #1e1e1e; 
+            background: #34649c; 
             font-size: 16px;
-            color: #e0e0e0;
+            color: #ffffff;
             cursor: pointer;
             appearance: none;
             outline: none;
@@ -501,19 +512,18 @@
 
 
         .select-food:focus{
-            border-color: #007bff;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-            background-color: #25242c;
+            border-color: #0474bc;
+            box-shadow: 0 0 5px #000000;
+            background-color: #759fca;
             border-radius: 6px 6px 0 0
         }
         
         .select-food option{
-            background: #37354b;
+            background: #759fca;
             color: #e0e0e0;
         }
 
         
         .select-food :nth-child(4){
             border-radius: 0 0 6px 6px;
-
         }
