@@ -1,1 +1,41 @@
 {% extends 'layout.html' %}
+
+{% block title %}Set Substitute{% endblock %}
+
+{% block content %}
+<br>
+<br>
+<br>
+<br>
+<h1>Set Substitute</h1>
+
+<!-- add to a table to view current  -->
+
+{% for groupleader_instance in groupleader_instances%}
+    <p>{{ groupleader_instance.group.group_name }} -- {{ groupleader_instance.person.first_name }} {{ groupleader_instance.person.last_name }}</p>
+{% endfor %}
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="group_id">Group</label>
+    <select name="group_id" id="group_id">
+        {% for group in groups %}
+            <option value="{{ group.group_id }}">{{ group.group_name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="person_id">Groupleader to assign</label>
+    <select name="person_id" id="person_id">
+        <option value="">None</option>
+        {% for groupleader in groupleaders %}
+            <option value="{{ groupleader.id }}">{{ groupleader.first_name }} {{ groupleader.last_name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="expire_date">Expiration Date</label>
+    <input type="date" id="expire_date" name="expire_date"><br>
+
+
+    <button type="submit">Set</button>
+</form>
+{% endblock %}

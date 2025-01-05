@@ -16,4 +16,6 @@ urlpatterns = [
     path('fetch-persons/', views.fetch_persons, name='fetch_persons'),
     path('decode_qr/', views.decode_qr, name='decode_qr'),
     path('set_food/', views.set_food, name='set_food'),
+    path('create_accounts/', views.create_accounts, name='create_accounts'),
+    path('create_person/', views.create_person, name='create_person'),
 ]
