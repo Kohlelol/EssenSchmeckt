@@ -1,8 +1,8 @@
 from django.contrib import admin
-from .models import Person, food, group, groupleader, facility, facility_manager
+from .models import person, food, group, groupleader, facility, facility_manager
 
 # Register your models here.
-admin.site.register(Person)
+admin.site.register(person)
 admin.site.register(food)
 admin.site.register(group)
 admin.site.register(groupleader)

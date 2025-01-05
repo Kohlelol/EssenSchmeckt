@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+
+{% block title %}Create Person{% endblock %}
+
+{% block content %}
+<h2>Create a New Person</h2>
+<form method="post">
+    {% csrf_token %}
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" required><br>
+
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name" required><br>
+
+    <label for="date_of_birth">Date of Birth (optional):</label>
+    <input type="date" id="date_of_birth" name="date_of_birth" required><br>
+
+    <label for="group_id">Group (can be assigned later):</label>
+    <select id="group_id" name="group_id">
+        <option value="">None</option>
+        {% for group in groups %}
+            <option value="{{ group.group_id }}">{{ group.group_name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <button type="submit">Create Person</button>
+</form>
+{% endblock %}
