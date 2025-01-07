@@ -3,30 +3,26 @@
 {% block title %}Create Person{% endblock %}
 
 {% block content %}
-<div class="login-container">
-
-<form method="post" class="login-form">
+<h2>Create a New Person</h2>
+<form method="post">
     {% csrf_token %}
-    <h2>Neue Person erstellen</h2>
-   <label for="first_name">Vorname:</label>
-    <input type="text" id="first_name" name="first_name" class="input-field" required><br>  
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" required><br>
 
     <label for="last_name">Nachname:</label>
     <input type="text" id="last_name" name="last_name" class="input-field" required><br>
 
-    <label for="date_of_birth">Geburtsdatum (optional):</label>
-    <input type="date" id="date_of_birth" name="date_of_birth" class="input-field" required><br>
+    <label for="date_of_birth">Date of Birth (optional):</label>
+    <input type="date" id="date_of_birth" name="date_of_birth" required><br>
 
-    <label for="group_id">Gruppe (kann später zugewiesen werden):</label>
-    <select id="group_id" name="group_id" class="input-field">
-        <option value="">keine Zuweisung</option>
+    <label for="group_id">Group (can be assigned later):</label>
+    <select id="group_id" name="group_id">
+        <option value="">None</option>
         {% for group in groups %}
             <option value="{{ group.group_id }}" >{{ group.group_name }}</option>
         {% endfor %}
     </select><br>
 
-    <button type="submit" class="login-submit-button" >Person erstellen</button>
+    <button type="submit">Create Person</button>
 </form>
-</div>
-
 {% endblock %}
