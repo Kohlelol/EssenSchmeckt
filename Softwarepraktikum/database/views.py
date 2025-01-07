@@ -288,45 +288,15 @@ def setsubstitute(request):
     
     groupleader_instances = groupleader.objects.all()
     
-    return render(request, 'database/setsubstitute.html', {'groupleaders': groupleaders, 'groups': groups, 'groupleader_instances': groupleader_instances})
+    not_groupleaders_with_account = person.objects.exclude(id__in=all_groupleaders)
+    not_groupleaders_with_account = not_groupleaders_with_account.exclude(user=None)
+    
+    return render(request, 'database/setsubstitute.html', {'groupleaders': list(groupleaders.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances, 'not_groupleaders_with_account': list(not_groupleaders_with_account.values('id', 'first_name', 'last_name'))})
 
 @login_required
 @group_required('management')
 def create_accounts(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        first_name = request.POST.get('first_name')
-        last_name = request.POST.get('last_name')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        password_confirm = request.POST.get('password_confirm')
-        person_id = request.POST.get('person_id')
-        permission_groups = request.POST.getlist('permission_groups')
-
-        if password != password_confirm:
-            messages.error(request, 'Passwords do not match.')
-        else:
-            try:
-                user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
-            except IntegrityError:
-                messages.error(request, 'Username already exists.')
-                return redirect('database:create_accounts')
-            
-            for permission_group in permission_groups:
-                group = Group.objects.get(name=permission_group)
-                user.groups.add(group)
-            
-            if person_id:
-                person_instance = person.objects.get(id=person_id)
-                if person_instance.user:
-                    messages.error(request, 'Account already exists for the given person.')
-                    return redirect('database:create_accounts')
-                person_instance.user = user
-                person_instance.save()
-            
-            messages.success(request, 'Account created successfully.')
-            return redirect('database:create_accounts')
-
+    
     groups = Group.objects.all()
     
     if request.user.is_superuser:
@@ -344,7 +314,70 @@ def create_accounts(request):
         facility_id = logged_in_person.group.facility_id
         assignable_persons = person.objects.filter(group__facility_id=facility_id)
     
-    return render(request, 'database/create_accounts.html', {'persons': assignable_persons, 'groups': groups, 'assignable_groups': assignable_groups})
+    
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        password_confirm = request.POST.get('password_confirm')
+        person_id = request.POST.get('person_id')
+        permission_groups = request.POST.getlist('permission_groups')
+
+        if password != password_confirm:
+            messages.error(request, 'Passwords do not match.')
+        else:
+            try:
+                user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
+            except IntegrityError:
+                messages.error(request, 'Username already exists.')
+                return render(request, 'database/create_accounts.html', {
+                        'persons': assignable_persons,
+                        'assignable_groups': assignable_groups,
+                        'next': request.POST.get('next', '')
+                    })
+            
+            for permission_group in permission_groups:
+                group = Group.objects.get(name=permission_group)
+                user.groups.add(group)
+                if permission_group == 'admin':
+                    user.is_superuser = True
+            
+            if person_id:
+                person_instance = person.objects.get(id=person_id)
+                if person_instance.user:
+                    messages.error(request, 'Account already exists for the given person.')
+                    # return redirect('database:create_accounts')
+                    return render(request, 'database/create_accounts.html', {
+                        'persons': assignable_persons,
+                        'assignable_groups': assignable_groups,
+                        'next': request.POST.get('next', '')
+                    })
+                person_instance.user = user
+                person_instance.save()
+            
+            messages.success(request, 'Account created successfully.')
+            
+            if 'next' in request.POST:
+                return redirect(request.POST.get('next'))
+            
+            return redirect('database:create_accounts')
+
+    return render(request, 'database/create_accounts.html', {'persons': assignable_persons, 'assignable_groups': assignable_groups, 'next': request.POST.get('next', '')})
+
+@login_required
+def fetch_groupleaders(request):
+    list_type = request.GET.get('list_type')
+    all_groupleaders = groupleader.objects.all().values_list('person_id', flat=True)
+    
+    if list_type == 'groupleaders':
+        persons = person.objects.filter(id__in=all_groupleaders)
+    else:
+        persons = person.objects.exclude(id__in=all_groupleaders).exclude(user=None)
+    
+    persons_data = [{'id': person.id, 'first_name': person.first_name, 'last_name': person.last_name} for person in persons]
+    return JsonResponse(persons_data, safe=False)
 
 @login_required
 @group_required('management')

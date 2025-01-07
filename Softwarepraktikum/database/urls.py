@@ -18,4 +18,5 @@ urlpatterns = [
     path('set_food/', views.set_food, name='set_food'),
     path('create_accounts/', views.create_accounts, name='create_accounts'),
     path('create_person/', views.create_person, name='create_person'),
+    path('fetch_groupleaders/', views.fetch_groupleaders, name='fetch_groupleaders'),
 ]

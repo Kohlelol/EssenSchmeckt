@@ -24,12 +24,15 @@
         {% endfor %}
     </select><br>
 
+    <label for="list_type">Select List</label>
+    <select id="list_type">
+        <option value="not_groupleaders">Not Groupleaders with Account</option>
+        <option value="groupleaders">Groupleaders</option>
+    </select><br>
+
     <label for="person_id">Groupleader to assign</label>
     <select name="person_id" id="person_id">
         <option value="">None</option>
-        {% for groupleader in groupleaders %}
-            <option value="{{ groupleader.id }}">{{ groupleader.first_name }} {{ groupleader.last_name }}</option>
-        {% endfor %}
     </select><br>
 
     <label for="expire_date">Expiration Date</label>
@@ -38,4 +41,36 @@
 
     <button type="submit">Set</button>
 </form>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const listTypeSelect = document.getElementById('list_type');
+        const personSelect = document.getElementById('person_id');
+
+        listTypeSelect.addEventListener('change', function() {
+            const listType = this.value;
+            const url = '{% url "database:fetch_groupleaders" %}?list_type=' + listType;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    personSelect.innerHTML = '<option value="">None</option>'; // Clear existing options
+                    data.forEach(person => {
+                        const option = document.createElement('option');
+                        option.value = person.id;
+                        option.textContent = `${person.first_name} ${person.last_name}`;
+                        personSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching persons:', error));
+        });
+
+        // Trigger change event to populate the person select element initially
+        listTypeSelect.dispatchEvent(new Event('change'));
+    });
+</script>
 {% endblock %}
