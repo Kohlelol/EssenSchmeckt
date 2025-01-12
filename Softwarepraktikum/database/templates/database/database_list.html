@@ -40,6 +40,17 @@
   </div>
   <br />
   <br />
+
+  {% if latest_pdf %}
+  <button id="show-pdf-button">Show Latest PDF</button>
+  <div id="pdf-container" style="display: none;">
+      <!-- <iframe id="pdf-frame" src="{{ latest_pdf.file.url }}" width="100%" height="600px"></iframe> --> <!-- fuck it cant fix rn -->
+  <a href="{{ latest_pdf.file.url }}" target="_blank">Open PDF</a>
+  </div>
+  {% else %}
+  <p>No PDF available for the current day.</p>
+  {% endif %}
+
 {% endblock %}
 
 {% block scripts %}
@@ -98,4 +109,17 @@
       .catch(error => console.error('Error:', error));
     }
   </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const showPdfButton = document.getElementById('show-pdf-button');
+        const pdfContainer = document.getElementById('pdf-container');
+
+        if (showPdfButton) {
+            showPdfButton.addEventListener('click', function() {
+                pdfContainer.style.display = 'block';
+                showPdfButton.style.display = 'none';
+            });
+        }
+    });
+</script>
 {% endblock %}
