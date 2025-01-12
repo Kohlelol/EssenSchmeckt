@@ -128,3 +128,10 @@ class facility_manager(models.Model):
     def __str__(self):
         return f"{self.facility.facility_name} - {self.person.last_name}, {self.person.first_name}"
         
+
+class PDFDocument(models.Model):
+    file = models.FileField(upload_to='menu/')
+    expire_date = models.DateField()
+    from_date = models.DateField()
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    

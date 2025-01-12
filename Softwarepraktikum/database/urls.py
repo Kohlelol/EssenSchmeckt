@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 from django.views.generic import TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'database'
 
@@ -19,4 +21,9 @@ urlpatterns = [
     path('create_accounts/', views.create_accounts, name='create_accounts'),
     path('create_person/', views.create_person, name='create_person'),
     path('fetch_groupleaders/', views.fetch_groupleaders, name='fetch_groupleaders'),
+    path('upload_menu/', views.upload_menu, name='upload_menu'),
+    path('success/', views.success, name='success'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

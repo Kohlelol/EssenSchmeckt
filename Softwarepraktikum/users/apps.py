@@ -6,9 +6,3 @@ class UsersConfig(AppConfig):
     name = 'users'
 
 
-class DatabaseConfig(AppConfig):
-    name = 'database'
-
-    def ready(self):
-        from database import scheduler
-        scheduler.start()

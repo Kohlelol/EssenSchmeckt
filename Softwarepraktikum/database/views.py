@@ -9,6 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
+from django.urls import reverse
 # Create your views here.
 
 
@@ -83,8 +85,12 @@ def database_list(request):
 
     for person_instance in combined_persons:
         person_instance.food_for_today = person_instance.get_food_for_today()
+        
+        
+    current_date = datetime.now().date()
+    latest_pdf = PDFDocument.objects.filter(from_date__lte=current_date, expire_date__gte=current_date).order_by('-uploaded_at').first()
 
-    return render(request, 'database/database_list.html', {'person': combined_persons, 'groups': allowed_group_names})
+    return render(request, 'database/database_list.html', {'person': combined_persons, 'groups': allowed_group_names, 'latest_pdf': latest_pdf})
 
 
 @login_required(login_url='/users/login/')
@@ -400,3 +406,30 @@ def create_person(request):
 
     groups = group.objects.all()
     return render(request, 'database/create_person.html', {'groups': groups})
+
+
+@login_required
+@group_required('group_leader')
+def upload_menu(request):
+    if request.method == 'POST' and request.FILES['file']:
+        file = request.FILES['file']
+        expire_date = request.POST.get('expire_date')
+        from_date = request.POST.get('from_date')
+        
+        fs = FileSystemStorage(location='media/menu')
+        filename = fs.save(file.name, file)
+        file_url = fs.url(filename)
+        
+        PDFDocument.objects.create(file='menu/' + filename, expire_date=expire_date, from_date=from_date)
+        
+        previous_page = request.META.get('HTTP_REFERER', '/')
+        success_url = f"{reverse('database:success')}?message=PDF erfolgreich hochgeladen&previous_page={previous_page}"
+        
+        return redirect(success_url) 
+    
+    return render(request, 'database/upload_menu.html')
+
+def success(request):
+    message = request.GET.get('message', 'Operation completed successfully.')
+    previous_page = request.GET.get('previous_page', '/')
+    return render(request, 'database/success.html', {'message': message, 'previous_page': previous_page})
