@@ -264,6 +264,13 @@ def setsubstitute(request):
         person_id = request.POST.get('person_id')
         expire_date = request.POST.get('expire_date')
         
+        person_instance = get_object_or_404(person, id=person_id)
+        user = person_instance.user
+        if user:
+            groupleader_group, created = Group.objects.get_or_create(name='groupleader')
+            if not user.groups.filter(name='groupleader').exists():
+                user.groups.add(groupleader_group)
+
         groupleader_instance = groupleader.objects.create(group_id=group_id, person_id=person_id, expires=expire_date)
         
         try:
@@ -379,6 +386,9 @@ def fetch_groupleaders(request):
     
     if list_type == 'groupleaders':
         persons = person.objects.filter(id__in=all_groupleaders)
+        groupleader_users = User.objects.filter(groups__name='groupleader')
+        groupleader_persons = person.objects.filter(user__in=groupleader_users)
+        persons = persons.union(groupleader_persons).order_by('last_name', 'first_name')
     else:
         persons = person.objects.exclude(id__in=all_groupleaders).exclude(user=None)
     
