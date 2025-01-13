@@ -2,6 +2,7 @@
 Repository für "EssenSchmeckt" von Gruppe 1 aus dem Software-Technik Praktikum 2024/25 der TUC
 
 Voraussetzung: 
+- Betriebssystem: Windows 10 oder 11
 - Python Installation min 3.12
 - git installiert
 
