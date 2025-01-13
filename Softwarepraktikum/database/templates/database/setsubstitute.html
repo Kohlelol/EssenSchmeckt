@@ -1,1 +1,76 @@
 {% extends 'layout.html' %}
+
+{% block title %}Set Substitute{% endblock %}
+
+{% block content %}
+<br>
+<br>
+<br>
+<br>
+<h1>Set Substitute</h1>
+
+<!-- add to a table to view current  -->
+
+{% for groupleader_instance in groupleader_instances%}
+    <p>{{ groupleader_instance.group.group_name }} -- {{ groupleader_instance.person.first_name }} {{ groupleader_instance.person.last_name }}</p>
+{% endfor %}
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="group_id">Group</label>
+    <select name="group_id" id="group_id">
+        {% for group in groups %}
+            <option value="{{ group.group_id }}">{{ group.group_name }}</option>
+        {% endfor %}
+    </select><br>
+
+    <label for="list_type">Select List</label>
+    <select id="list_type">
+        <option value="not_groupleaders">Not Groupleaders with Account</option>
+        <option value="groupleaders">Groupleaders</option>
+    </select><br>
+
+    <label for="person_id">Groupleader to assign</label>
+    <select name="person_id" id="person_id">
+        <option value="">None</option>
+    </select><br>
+
+    <label for="expire_date">Expiration Date</label>
+    <input type="date" id="expire_date" name="expire_date"><br>
+
+
+    <button type="submit">Set</button>
+</form>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const listTypeSelect = document.getElementById('list_type');
+        const personSelect = document.getElementById('person_id');
+
+        listTypeSelect.addEventListener('change', function() {
+            const listType = this.value;
+            const url = '{% url "database:fetch_groupleaders" %}?list_type=' + listType;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    personSelect.innerHTML = '<option value="">None</option>'; // Clear existing options
+                    data.forEach(person => {
+                        const option = document.createElement('option');
+                        option.value = person.id;
+                        option.textContent = `${person.first_name} ${person.last_name}`;
+                        personSelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching persons:', error));
+        });
+
+        // Trigger change event to populate the person select element initially
+        listTypeSelect.dispatchEvent(new Event('change'));
+    });
+</script>
+{% endblock %}

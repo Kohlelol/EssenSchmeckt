@@ -1,0 +1,132 @@
+{% extends 'layout.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="login-container">
+    <form method="post" class="login-form" action="{% url 'database:create_accounts' %}">
+        {% csrf_token %}
+        <h2>Create a New Account</h2>
+        <br>
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" class="input-field" required><br>
+
+        <label for="first_name">First Name (optional):</label>
+        <input type="text" id="first_name" name="first_name" class="input-field"><br>
+
+        <label for="last_name">Last Name (optional):</label>
+        <input type="text" id="last_name" name="last_name" class="input-field"><br>
+
+        <label for="email">Email (optional):</label>
+        <input type="email" id="email" name="email" class="input-field"><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" class="input-field" required><br>
+
+        <label for="password_confirm">Confirm Password:</label>
+        <input type="password" id="password_confirm" name="password_confirm" class="input-field" required><br>
+
+        <label for="person_id">Assign to Person (optional for management accounts. Required für Gruppenleiter und
+            Standortleiter):</label>
+        <select id="person_id" name="person_id" class="select-field">
+            <option value="">None</option>
+            {% for person in persons %}
+            <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="permission_groups">Permission Groups:</label>
+        <div id="permission_groups">
+            {% for group in groups %}
+            {% if group.name in assignable_groups %}
+            <div>
+                <input type="checkbox" id="group_{{ group.name }}" name="permission_groups" value="{{ group.name }}">
+                <label for="group_{{ group.name }}">{{ group.name }}</label>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div><br>
+
+        <div id="selected_groups_container">
+            <h3>Selected Permission Groups:</h3>
+            <ul id="selected_groups_list"></ul>
+        </div>
+
+        {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
+
+        <button type="submit" class="login-submit-button">Create Account</button>
+    </form>
+</div>
+{% if messages %}
+<div id="messages">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const permissionGroupsDiv = document.getElementById('permission_groups');
+        const selectedGroupsList = document.getElementById('selected_groups_list');
+
+        function updateSelectedOptions() {
+            const checkboxes = permissionGroupsDiv.querySelectorAll('input[type="checkbox"]');
+            selectedGroupsList.innerHTML = ''; // Clear the list
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = checkbox.nextElementSibling.textContent;
+                    const removeButton = document.createElement('button');
+                    removeButton.textContent = 'Remove';
+                    removeButton.addEventListener('click', function () {
+                        checkbox.checked = false;
+                        updateSelectedOptions();
+                    });
+                    listItem.appendChild(removeButton);
+                    selectedGroupsList.appendChild(listItem);
+                }
+            });
+        }
+
+        permissionGroupsDiv.addEventListener('change', updateSelectedOptions);
+        updateSelectedOptions(); // Initial call to set the correct classes on page load
+    });
+</script>
+
+<style>
+    .selected-option {
+        background-color: #007bff;
+        color: white;
+    }
+
+    #selected_groups_container {
+        margin-top: 20px;
+    }
+
+    #selected_groups_list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    #selected_groups_list li {
+        margin: 5px 0;
+    }
+
+    #selected_groups_list button {
+        margin-left: 10px;
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+    }
+
+    #selected_groups_list button:hover {
+        background-color: #c82333;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'layout.html' %}
+
+{% block title %}Upload PDF{% endblock %}
+
+{% block content %}
+<h1>Upload PDF</h1>
+<div id="drop-area">
+    <form id="file-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" id="file" name="file" accept="application/pdf" style="display: none;">
+        <label for="from_date">From Date:</label>
+        <input type="date" id="from_date" name="from_date" required><br>
+        
+        <label for="expire_date">Expiration Date:</label>
+        <input type="date" id="expire_date" name="expire_date" required><br>
+        
+        <button type="submit">Upload</button>
+    </form>
+    <div id="drop-zone">
+        <p>Drag and drop a PDF file here or click to select a file</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropArea = document.getElementById('drop-area');
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file');
+        const fileForm = document.getElementById('file-form');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropZone.classList.add('highlight'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropZone.classList.remove('highlight'), false);
+        });
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'application/pdf') {
+                    fileInput.files = files;
+                    fileForm.submit();
+                } else {
+                    alert('Please upload a PDF file.');
+                }
+            }
+        }
+
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file && file.type === 'application/pdf') {
+                fileForm.submit();
+            } else {
+                alert('Only PDF files are allowed.');
+                fileInput.value = '';
+            }
+        });
+    });
+</script>
+{% endblock %}

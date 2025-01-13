@@ -16,10 +16,15 @@
         }
 
         .login-container {
-            display: flex;
+            font-size: larger;
+            margin-top:   150px;
+            margin-bottom: 100px;
+            display:flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            min-width: 100px;
+            min-height: 250px;
         }
 
         .login-form {
@@ -27,19 +32,23 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 400px;
             text-align: center;
             transition: background-color 0.3s;
         }
 
         h2 {
-            margin-bottom: 20px;
+            margin-top: 20px;
             color: #ffffff;
+            font-size:x-large;
+            font-weight: 300;
+            max-width: 200;
+            font-weight: bold;
         }
+
 
         label {
             margin: 5px 0;
-            font-weight: bold;
             color: #ffffff;
             display: block;
         }
