@@ -60,6 +60,8 @@ def start():
         register_events(scheduler)
         scheduler.start()
         scheduler_started = True
+        delete_expired_group_leaders()
+        delete_expired_pdfs()
         print("Scheduler started!")
     
     # delete_expired_group_leaders()

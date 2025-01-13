@@ -57,6 +57,8 @@ class person(models.Model):
         current_date = datetime.now().date()
         return food.objects.filter(person=self, date=current_date).first()
 
+    def __str__(self):
+        return f"{self.last_name}, {self.first_name} | {self.date_of_birth}"
 
 class food(models.Model):
     person = models.ForeignKey(person, on_delete=models.SET_NULL, related_name='food', null=True)

@@ -9,6 +9,8 @@ def users_view(request):
     return redirect('users:login')
 
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('users:select')
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():

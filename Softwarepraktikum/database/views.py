@@ -238,15 +238,15 @@ def decode_qr(request):
                 return render(request, 'database/decode_qr.html', {'success': False, 'error': 'No QR data found'})
     
             current_date = datetime.now().date()
-            person = person.objects.get(id=qr_data)
+            person_instance = person.objects.get(id=qr_data)
 
             food_instance = food.objects.filter(date=current_date, person=person).first()
             if food_instance:
                 if food_instance.served:
-                    return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': 'Food already served for the given person and date'})
-                return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': food_instance.food})
+                    return render(request, 'database/decode_qr.html', {'success': True, 'person': person_instance, 'food': 'Food already served for the given person and date'})
+                return render(request, 'database/decode_qr.html', {'success': True, 'person': person_instance, 'food': food_instance.food + ' marked as served'})
             else:
-                return render(request, 'database/decode_qr.html', {'success': True, 'person': person, 'food': 'No food order found for the given person and date'})
+                return render(request, 'database/decode_qr.html', {'success': True, 'person': person_instance, 'food': 'No food order found for the given person and date'})
 
         except Exception as e:
             return render(request, 'database/decode_qr.html', {'success': False, 'error': str(e)})
@@ -259,37 +259,15 @@ def setgroupleader(request):
 @login_required
 @group_required('facility_manager')
 def setsubstitute(request):
-    if request.method == 'POST':
-        group_id = request.POST.get('group_id')
-        person_id = request.POST.get('person_id')
-        expire_date = request.POST.get('expire_date')
-        
-        person_instance = get_object_or_404(person, id=person_id)
-        user = person_instance.user
-        if user:
-            groupleader_group, created = Group.objects.get_or_create(name='groupleader')
-            if not user.groups.filter(name='groupleader').exists():
-                user.groups.add(groupleader_group)
-
-        groupleader_instance = groupleader.objects.create(group_id=group_id, person_id=person_id, expires=expire_date)
-        
-        try:
-            groupleader_instance.save()
-        except IntegrityError:
-            return render(request, 'database/setsubstitute.html', {'error': 'Integrity error: Duplicate entry'})
-        
-        
-        return render(request, 'database/setsubstitute.html', {'success': 'Substitute set'})
-    
-    # query = request.GET.get('q', '')
+        # query = request.GET.get('q', '')
     # if request.user.is_superuser:
     #     facility_id = facility.objects.values_list('facility_id', flat=True)
     # else:
     #     logged_in_person = get_object_or_404(person, user=request.user)
     #     facility_id = logged_in_person.group.facility_id
     
-    all_groupleaders = groupleader.objects.all().values_list('person_id', flat=True)
-    groupleaders = person.objects.filter(id__in=all_groupleaders)
+    # all_groupleaders = groupleader.objects.all().values_list('person_id', flat=True)
+    # groupleaders = person.objects.filter(id__in=all_groupleaders)
     # if query:
     #     groupleaders = person.objects.filter(
     #         (Q(first_name__icontains=query) | Q(last_name__icontains=query)), id__in=all_groupleaders)
@@ -301,10 +279,64 @@ def setsubstitute(request):
     
     groupleader_instances = groupleader.objects.all()
     
-    not_groupleaders_with_account = person.objects.exclude(id__in=all_groupleaders)
-    not_groupleaders_with_account = not_groupleaders_with_account.exclude(user=None)
+    # not_groupleaders_with_account = person.objects.exclude(id__in=all_groupleaders) # everyone with account, but not currently groupleader of a group
+    # not_groupleaders_with_account = not_groupleaders_with_account.exclude(user=None)
     
-    return render(request, 'database/setsubstitute.html', {'groupleaders': list(groupleaders.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances, 'not_groupleaders_with_account': list(not_groupleaders_with_account.values('id', 'first_name', 'last_name'))})
+    list_type = request.GET.get('list_type')
+    all_groupleaders = groupleader.objects.all().values_list('person_id', flat=True)
+    
+    if list_type == 'groupleaders':
+        persons = person.objects.filter(id__in=all_groupleaders)
+        groupleader_users = User.objects.filter(groups__name='groupleader')
+        groupleader_persons = person.objects.filter(user__in=groupleader_users)
+        persons = persons.union(groupleader_persons).order_by('last_name', 'first_name')
+    else:
+        groupleader_user_role = User.objects.filter(groups__name='groupleader')
+        persons = person.objects.exclude(id__in=all_groupleaders).exclude(user=None).exclude(user__in=groupleader_user_role).order_by('last_name', 'first_name')
+    
+    if request.method == 'POST':
+        group_id = request.POST.get('group_id')
+        person_id = request.POST.get('person_id')
+        expire_date = request.POST.get('expire_date')
+        if person_id == "":
+            return render(request, 'database/setsubstitute.html', {'error': 'Please select a person', 'groupleaders': list(persons.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances})
+        person_instance = get_object_or_404(person, id=person_id)
+        user = person_instance.user
+        if expire_date == "":
+            expire_date = None
+        if user:
+            groupleader_group, created = Group.objects.get_or_create(name='groupleader')
+            if not user.groups.filter(name='groupleader').exists():
+                user.groups.add(groupleader_group)
+
+        groupleader_instance = groupleader.objects.create(group_id=group_id, person_id=person_id, expires=expire_date)
+        
+        try:
+            groupleader_instance.save()
+        except IntegrityError:
+            return render(request, 'database/setsubstitute.html', {'error': 'Integrity error: Duplicate entry', 'groupleaders': list(persons.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances})
+        
+        
+        return render(request, 'database/setsubstitute.html', {'success': 'Substitute set', 'groupleaders': list(persons.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances})
+
+    return render(request, 'database/setsubstitute.html', {'groupleaders': list(persons.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances})
+
+@login_required
+def fetch_groupleaders(request):
+    list_type = request.GET.get('list_type')
+    all_groupleaders = groupleader.objects.all().values_list('person_id', flat=True)
+    
+    if list_type == 'groupleaders':
+        persons = person.objects.filter(id__in=all_groupleaders)
+        groupleader_users = User.objects.filter(groups__name='groupleader')
+        groupleader_persons = person.objects.filter(user__in=groupleader_users)
+        persons = persons.union(groupleader_persons).order_by('last_name', 'first_name')
+    else:
+        groupleader_user_role = User.objects.filter(groups__name='groupleader')
+        persons = person.objects.exclude(id__in=all_groupleaders).exclude(user=None).exclude(user__in=groupleader_user_role).order_by('last_name', 'first_name')
+    
+    persons_data = [{'id': person.id, 'first_name': person.first_name, 'last_name': person.last_name} for person in persons]
+    return JsonResponse(persons_data, safe=False)
 
 @login_required
 @group_required('management')
@@ -379,21 +411,6 @@ def create_accounts(request):
 
     return render(request, 'database/create_accounts.html', {'persons': assignable_persons, 'assignable_groups': assignable_groups, 'next': request.POST.get('next', '')})
 
-@login_required
-def fetch_groupleaders(request):
-    list_type = request.GET.get('list_type')
-    all_groupleaders = groupleader.objects.all().values_list('person_id', flat=True)
-    
-    if list_type == 'groupleaders':
-        persons = person.objects.filter(id__in=all_groupleaders)
-        groupleader_users = User.objects.filter(groups__name='groupleader')
-        groupleader_persons = person.objects.filter(user__in=groupleader_users)
-        persons = persons.union(groupleader_persons).order_by('last_name', 'first_name')
-    else:
-        persons = person.objects.exclude(id__in=all_groupleaders).exclude(user=None)
-    
-    persons_data = [{'id': person.id, 'first_name': person.first_name, 'last_name': person.last_name} for person in persons]
-    return JsonResponse(persons_data, safe=False)
 
 @login_required
 @group_required('management')
