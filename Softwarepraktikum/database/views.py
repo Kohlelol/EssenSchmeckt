@@ -309,9 +309,9 @@ def setsubstitute(request):
             if not user.groups.filter(name='groupleader').exists():
                 user.groups.add(groupleader_group)
 
-        groupleader_instance = groupleader.objects.create(group_id=group_id, person_id=person_id, expires=expire_date)
         
         try:
+            groupleader_instance = groupleader.objects.create(group_id=group_id, person_id=person_id, expires=expire_date)
             groupleader_instance.save()
         except IntegrityError:
             return render(request, 'database/setsubstitute.html', {'error': 'Integrity error: Duplicate entry', 'groupleaders': list(persons.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances})
@@ -342,23 +342,22 @@ def fetch_groupleaders(request):
 @group_required('management')
 def create_accounts(request):
     
-    groups = Group.objects.all()
-    
     if request.user.is_superuser:
-        assignable_groups = [group.name for group in groups]
+        assignable_groups = Group.objects.all()
     else:
         user_groups = request.user.groups.values_list('name', flat=True)
         assignable_groups = set()
-        for user_group in user_groups:
-            assignable_groups.update(PERMISSION_HIERARCHY.get(user_group, []))
+        # for user_group in user_groups:
+        #     assignable_groups.update(PERMISSION_HIERARCHY.get(user_group, []))
+        assignable_groups = Group.objects.filter(name__in=set().union(*[PERMISSION_HIERARCHY.get(group, []) for group in user_groups]))
     
-    if request.user.is_superuser | request.user.groups.filter(name='management').exists():
-        assignable_persons = person.objects.all()
+    if request.user.is_superuser or request.user.groups.filter(name='management').exists():
+        assignable_persons = person.objects.exclude(user__isnull=False)
     else:
         logged_in_person = get_object_or_404(person, user=request.user)
         facility_id = logged_in_person.group.facility_id
         assignable_persons = person.objects.filter(group__facility_id=facility_id)
-    
+        assignable_persons = assignable_persons.exclude(user__isnull=False)
     
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -424,10 +423,12 @@ def create_person(request):
         if not first_name or not last_name:
             messages.error(request, 'Please fill in all required fields.')
         else:
-            person = person(first_name=first_name, last_name=last_name, date_of_birth=date_of_birth)
+            if date_of_birth == "":
+                date_of_birth = None
+            person_instance = person(first_name=first_name, last_name=last_name, date_of_birth=date_of_birth)
             if group_id:
-                person.group_id_id = group_id
-            person.save()
+                person_instance.group_id_id = group_id
+            person_instance.save()
             messages.success(request, 'person created successfully.')
             return redirect('database:create_person')
 

@@ -28,7 +28,7 @@
 
         <label for="person_id">Assign to Person (optional for management accounts. Required für Gruppenleiter und
             Standortleiter):</label>
-        <select id="person_id" name="person_id" class="select-field">
+        <select id="person_id" name="person_id" class="input-field">
             <option value="">None</option>
             {% for person in persons %}
             <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
@@ -37,13 +37,11 @@
 
         <label for="permission_groups">Permission Groups:</label>
         <div id="permission_groups">
-            {% for group in groups %}
-            {% if group.name in assignable_groups %}
+            {% for group in assignable_groups %}
             <div>
                 <input type="checkbox" id="group_{{ group.name }}" name="permission_groups" value="{{ group.name }}">
                 <label for="group_{{ group.name }}">{{ group.name }}</label>
             </div>
-            {% endif %}
             {% endfor %}
         </div><br>
 
