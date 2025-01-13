@@ -5,29 +5,28 @@
 <div class="login-container">
     <form method="post" class="login-form" action="{% url 'database:create_accounts' %}">
         {% csrf_token %}
-        <h2>Create a New Account</h2>
+        <h2>Erstelle einen neuen Account</h2>
         <br>
 
-        <label for="username">Username:</label>
+        <label for="username">Benutzername:</label>
         <input type="text" id="username" name="username" class="input-field" required><br>
 
-        <label for="first_name">First Name (optional):</label>
+        <label for="first_name">Vorname (optional):</label>
         <input type="text" id="first_name" name="first_name" class="input-field"><br>
 
-        <label for="last_name">Last Name (optional):</label>
+        <label for="last_name">Nachname (optional):</label>
         <input type="text" id="last_name" name="last_name" class="input-field"><br>
 
-        <label for="email">Email (optional):</label>
+        <label for="email">E-mail (optional):</label>
         <input type="email" id="email" name="email" class="input-field"><br>
 
-        <label for="password">Password:</label>
+        <label for="password">Passwort:</label>
         <input type="password" id="password" name="password" class="input-field" required><br>
 
-        <label for="password_confirm">Confirm Password:</label>
+        <label for="password_confirm">Passwort bestätigen:</label>
         <input type="password" id="password_confirm" name="password_confirm" class="input-field" required><br>
 
-        <label for="person_id">Assign to Person (optional for management accounts. Required für Gruppenleiter und
-            Standortleiter):</label>
+        <label for="person_id">Zuordnung zur Person (optional für Management. Erdorderlich für Gruppenleiter und Standortleiter):</label>
         <select id="person_id" name="person_id" class="select-field">
             <option value="">None</option>
             {% for person in persons %}
@@ -35,7 +34,7 @@
             {% endfor %}
         </select><br>
 
-        <label for="permission_groups">Permission Groups:</label>
+        <label for="permission_groups">Berechtigungsgruppe:</label>
         <div id="permission_groups">
             {% for group in groups %}
             {% if group.name in assignable_groups %}
@@ -48,7 +47,7 @@
         </div><br>
 
         <div id="selected_groups_container">
-            <h3>Selected Permission Groups:</h3>
+            <h3>Wähle die Berechtigungsgruppe aus:</h3>
             <ul id="selected_groups_list"></ul>
         </div>
 
@@ -56,7 +55,7 @@
         <input type="hidden" name="next" value="{{ request.GET.next }}">
         {% endif %}
 
-        <button type="submit" class="login-submit-button">Create Account</button>
+        <button type="submit" class="login-submit-button">Erstelle Account</button>
     </form>
 </div>
 {% if messages %}
