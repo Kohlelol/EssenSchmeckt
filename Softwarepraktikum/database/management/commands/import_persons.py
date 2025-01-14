@@ -1,4 +1,3 @@
-import pandas as pd
 from django.core.management.base import BaseCommand
 from database.models import Person, status, food, group, groupleader, facility
 

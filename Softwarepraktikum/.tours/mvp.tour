@@ -1,0 +1,62 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "MVP",
+  "steps": [
+    {
+      "file": "database/templates/database/qr_code_scanner.html",
+      "description": "JSQR",
+      "line": 62
+    },
+    {
+      "file": "database/templates/database/qr_code_scanner.html",
+      "description": "Anzeige entfernen",
+      "line": 113
+    },
+    {
+      "file": "database/scheduler.py",
+      "description": "Scheduler zum löschen alter Daten",
+      "line": 28
+    },
+    {
+      "file": "database/apps.py",
+      "description": "Achtung! Scheduler erst nach der Datenbank starten",
+      "line": 33
+    },
+    {
+      "file": "database/models.py",
+      "description": "Datenbank zur Speicherung aller notwendigen Daten",
+      "line": 33
+    },
+    {
+      "file": "database/management/commands/import_persons.py",
+      "description": "Command zum importieren der csv",
+      "line": 33
+    },
+    {
+      "file": "users/views.py",
+      "description": "Login",
+      "line": 27
+    },
+    {
+      "file": "database/templates/database/upload_menu.html",
+      "description": "Drag&Drop File upload",
+      "line": 76
+    },
+    {
+      "file": "database/views.py",
+      "description": "View mit Suchfunktion",
+      "line": 93
+    },
+    {
+      "file": "database/views.py",
+      "description": "Login muss vorhanden sein und nach Gruppe prüfen ",
+      "line": 97
+    },
+    {
+      "file": "static/js/dark-mode.js",
+      "description": "Wichtig um beim neu laden den Hintergrund zu halten",
+      "line": 29
+    }
+  ],
+  "ref": "presenation"
+}
