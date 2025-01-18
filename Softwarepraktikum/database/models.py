@@ -108,7 +108,7 @@ class groupleader(models.Model):
 class facility(models.Model):
     facility_id = models.AutoField(primary_key=True)
     facility_name = models.CharField(max_length=30)
-    facility_location = models.CharField(max_length=30)
+    facility_location = models.CharField(max_length=30, null=True, default=None)
     
     class Meta:
         verbose_name = "Facility"

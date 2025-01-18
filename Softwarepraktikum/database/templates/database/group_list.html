@@ -1,0 +1,24 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% for person in person %}
+  <tr>
+    <td>{{ person.last_name }}</td>
+    <td>{{ person.first_name }}</td>
+    <td>
+      <div class="select-group-container">
+        <select id={{ person.id }} name="groupselect" class="select-food" onchange="updateGroup(this, '{{ person.id }}');colorchange(this)"> 
+          <option value="None" {% if not person.group %}selected{% endif %}>Nothing</option>
+          {% for group in all_groups%}
+            <option value="{{ group.group_id }}" {% if person.group_id_id == group.group_id %}selected{% endif %}>{{ group.group_name }} -- {{ group.task }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </td>
+  </tr>
+{% empty %}
+  <tr>
+    <td colspan="2">No persons found.</td>
+  </tr>
+{% endfor %}
+
+

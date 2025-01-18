@@ -176,23 +176,111 @@ def daily_order(request):
     return render(request, 'database/daily_order.html')
 
 
-def edit_orders(request):
-    query = request.GET.get('q', '')
-    logged_in_person = get_object_or_404(person, user=request.user)
-    if request.user.is_superuser:
-        allowed_group_ids = group.objects.values_list('group_id', flat=True)
-    else:
-        allowed_facility_id = logged_in_person.group.facility_id()
-        allowed_group_ids = allowed_facility_id.groups.values_list('group_id', flat=True)
+def person_group_management(request):
+    persons = person.objects.all()
+    groups = group.objects.all()
 
+    if request.method == 'POST':
+        form_type = request.POST.get('form_type')
+        
+        if  form_type == 'assign_group':
+            person_id = request.POST.get('person_id')
+            group_id = request.POST.get('group_id')
+            person_instance = get_object_or_404(person, id=person_id)
+            person_instance.group_id_id = group_id
+            person_instance.save()
+
+    return render(request, 'database/person_group_management.html', {'person': persons, 'groups': groups})
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def fetch_person_group(request):
+    print("fetch_person_group started")
+    query = request.GET.get('q', '')
+    group_id = request.GET.get('group', '')
+    
+    allowed_group_ids = group.objects.values_list('group_id', flat=True)
     
     if query:
         persons = person.objects.filter(
-            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids).order_by('last_name')
+            (Q(first_name__icontains=query) | Q(last_name__icontains=query)), group_id__in=allowed_group_ids)
     else:
-        persons = person.objects.filter(group_id__in=allowed_group_ids).order_by('last_name')
+        persons = person.objects.all()
 
-    return render(request, 'database/edit_orders.html', {'person': persons})
+    if group_id:
+        if group_id == 'None':
+            group_id = None
+        persons = persons.filter(group_id=group_id)
+        
+    all_groups = group.objects.all()
+    print("render started")
+    return render(request, 'database/group_list.html', {'person': persons, 'all_groups': all_groups})  
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def set_group(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            person_id = data.get('person_id')
+            food_value = data.get('group_id')
+            person_instance = get_object_or_404(person, id=person_id)
+                        
+            # if int(food_value) == 1:
+            #     food_instance = food.objects.filter(person=person_instance, date=current_date).first()
+            #     if food_instance:
+            #         food_instance.delete()
+            #         return JsonResponse({'success': True})
+            #     else:
+            #         return JsonResponse({'success': False, 'error': 'Food order not found for the given person and date'})
+            # else:
+            #     food_instance, _ = food.objects.get_or_create(person=person_instance, date=current_date)
+            #     food_instance.food = food_value
+            #     food_instance.save()
+            
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def create_facility_group(request):
+    groups = group.objects.all()
+    facilites = facility.objects.all()
+    form_type = request.POST.get('form_type')
+    if request.method == 'POST':
+        if form_type == 'create_group':
+            group_name = request.POST.get('group_name')
+            facility_id = request.POST.get('facility_id')
+            task = request.POST.get('group_task')
+            try:
+                group_instance = group(group_name=group_name, facility_id=facility_id, task=task)
+                group_instance.save()
+            except IntegrityError:
+                error = {'form_type': 'create_group', 'message': 'Group creation failed'}
+                return render(request, 'database/create_facility_group.html', {'error': error})
+            
+            previous_page = request.META.get('HTTP_REFERER', '/')
+            success_url = f"{reverse('database:success')}?message=Group Successfully assigned&previous_page={previous_page}"
+        
+            return redirect(success_url) 
+        
+        if form_type == 'create_facility':
+            facility_name = request.POST.get('facility_name')
+            facility_location = request.POST.get('facility_location')
+            try: 
+                facility_instance = facility(facility_name=facility_name, facility_location=facility_location)
+                facility_instance.save()
+            except IntegrityError:
+                error = {'form_type': 'create_facility', 'message': 'Facility creation failed'}
+                return render(request, 'database/create_facility_group.html', {'error': error})
+            
+            previous_page = request.META.get('HTTP_REFERER', '/')
+            success_url = f"{reverse('database:success')}?message=Group Successfully assigned&previous_page={previous_page}"
+        
+            return redirect(success_url) 
+        
+    return render(request, 'database/create_facility_group.html', {'groups': groups, 'facilities': facilites})
 
 
 @login_required(login_url='/users/login/')

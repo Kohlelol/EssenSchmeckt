@@ -10,7 +10,7 @@ urlpatterns = [
     path('', views.database_list, name='database_list'),
     path('attendance/', views.attendance, name='attendance'),
     path('daily_order/', views.daily_order, name='daily_order'),
-    path('edit_orders/', views.edit_orders, name='edit_orders'),
+    path('person_group_management/', views.person_group_management, name='person_group_management'),
     path('order/', views.order, name='order'),
     path('qr_code_scanner/', views.qr_code_scanner, name='qr_code_scanner'),
     path('setgroupleader/', views.setgroupleader, name='setgroupleader'),
@@ -23,6 +23,8 @@ urlpatterns = [
     path('fetch_groupleaders/', views.fetch_groupleaders, name='fetch_groupleaders'),
     path('upload_menu/', views.upload_menu, name='upload_menu'),
     path('success/', views.success, name='success'),
+    path('create_facility_group/', views.create_facility_group, name='create_facility_group'),
+    path('fetch-person-group/', views.fetch_person_group, name='fetch-person-group'),
 ]
 
 if settings.DEBUG:

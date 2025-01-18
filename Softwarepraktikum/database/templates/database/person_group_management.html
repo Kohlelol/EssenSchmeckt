@@ -1,0 +1,122 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+  Database List
+{% endblock %}
+
+{% block content %}
+  <br />
+  <br />
+  <br />
+  <br />
+
+  <div class="database-list-container">
+    <form id="search-form" method="get" action="{% url 'database:fetch-person-group' %}">
+      <div class="form-row">
+        <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}" class="input-field-table" />
+        <!-- <button type="submit" class="search-button">Search</button> -->
+
+        <label for="group-select" class="select-group-label">Gruppe auswählen:</label>
+        <select id="group-select" name="group" class="select-field">
+          <option value="">Alle Gruppen</option>
+          <option value="None">Ohne Gruppe</option>
+          {% for group in groups %}
+            <option value="{{ group.group_id }}">{{ group.group_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </form>
+    <div class="database-list-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Vorname</th>
+            <th>Gruppe</th>
+          </tr>
+        </thead>
+        <tbody id="resultContainer"></tbody>
+      </table>
+    </div>
+  </div>
+  <br />
+  <br />
+
+
+  {% endblock %}
+
+  {% block scripts %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('search-input')
+        const groupSelect = document.getElementById('group-select')
+        const searchForm = document.getElementById('resultContainer')
+      
+        function fetchResults() {
+          const query = searchInput.value
+          const group = groupSelect.value
+          // Send an AJAX request
+          fetch(`{% url 'database:fetch-person-group' %}?q=${encodeURIComponent(query)}&group=${encodeURIComponent(group)}`, {
+            method: 'GET',
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+            }
+          })
+            .then((response) => response.text())
+            .then((data) => {
+              // Update the result container with the new data
+              searchForm.innerHTML = data
+            })
+            .catch((error) => console.error('Error:', error))
+        }
+        fetchResults()
+      
+        searchInput.addEventListener('input', fetchResults)
+        groupSelect.addEventListener('change', fetchResults)
+      })
+    </script>
+    <script>
+      function updateGroup(selectElement, personId, groupId) {
+        const selectedValue = selectElement.value;
+    
+        fetch('set_group/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: JSON.stringify({
+            person_id: personId,
+            group_id: groupId,
+            food_value: selectedValue
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            console.log('group updated successfully');
+          } else {
+            console.error('Error updating group:', data.error);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+      }
+  
+
+    </script>
+    <script>
+          function colorchange(Element){
+          //const select_value = Element.value; 
+            Element.style.backgroundColor="#292929";
+      /*    if(select_value=="2"){
+            Element.style.backgroundColor="red";
+          }
+          if(select_value=="3"){
+            Element.style.backgroundColor="blue";
+          }
+      */
+        }
+  
+  
+    </script>
+  {% endblock %}
