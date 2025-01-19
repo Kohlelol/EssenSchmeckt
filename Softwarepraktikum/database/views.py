@@ -4,13 +4,16 @@ from .models import *
 from django.contrib.auth.models import User, Group
 from django.db.models import Q
 from django.db import IntegrityError
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from datetime import datetime
 from django.contrib import messages
 from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from collections import defaultdict
 # Create your views here.
 
 
@@ -77,15 +80,14 @@ def database_list(request):
     else:
         persons = person.objects.filter(group_id__in=allowed_group_ids)
 
-    group_leaders = person.objects.filter(Q(group_leaderships__group_id__in=allowed_group_ids)).distinct()
+    group_leaders = person.objects.filter((Q(first_name__icontains=query) | Q(last_name__icontains=query)), Q(group_leaderships__group_id__in=allowed_group_ids)).distinct()
 
     combined_persons = persons.union(group_leaders).order_by('last_name', 'first_name')
 
     allowed_group_names = group.objects.filter(group_id__in=allowed_group_ids)
 
     for person_instance in combined_persons:
-        person_instance.food_for_today = person_instance.get_food_for_today()
-        
+        person_instance.food_for_today = person_instance.get_food_for_today()        
         
     current_date = datetime.now().date()
     latest_pdf = PDFDocument.objects.filter(from_date__lte=current_date, expire_date__gte=current_date).order_by('-uploaded_at').first()
@@ -115,7 +117,7 @@ def fetch_persons(request):
         print(group_id)
         persons = persons.filter(group_id=group_id)
 
-    group_leaders = person.objects.filter(Q(group_leaderships__group_id__in=allowed_group_ids)).distinct()
+    group_leaders = person.objects.filter((Q(first_name__icontains=query) | Q(last_name__icontains=query)), Q(group_leaderships__group_id__in=allowed_group_ids)).distinct()
      
     combined_persons = persons.union(group_leaders).order_by('last_name', 'first_name')
 
@@ -549,3 +551,93 @@ def success(request):
     message = request.GET.get('message', 'Operation completed successfully.')
     previous_page = request.GET.get('previous_page', '/')
     return render(request, 'database/success.html', {'message': message, 'previous_page': previous_page})
+
+@login_required(login_url='/users/login/')
+def init_export_order(request):
+    if request.method == 'POST':
+        lock_items = request.POST.get('lock_items')
+        current_time = datetime.now().time()
+        if lock_items and current_time > datetime.strptime('08:00', '%H:%M').time():
+            food.objects.filter(date=datetime.now().date()).update(locked=True)
+            print("Items locked successfully.")
+            return redirect('database:export_order')
+
+        print("Locking failed. Please try again later.")
+        return render(request, 'database/init_export_order.html', {'error': 'Locking failed. Please try again later.'})
+
+    return render(request, 'database/export_order.html')    
+
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def export_order(request):
+    persons = person.objects.all().order_by('last_name', 'first_name')
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="order.pdf"'
+
+    # Create the PDF object, using the response object as its "file."
+    p = canvas.Canvas(response, pagesize=letter)
+    width, height = letter
+
+    # Title
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, height - 40, "Food Orders for Today")
+
+    # Table headers
+    p.setFont("Helvetica-Bold", 12)
+    p.drawString(50, height - 80, "First Name")
+    p.drawString(150, height - 80, "Last Name")
+    p.drawString(250, height - 80, "Group")
+    p.drawString(350, height - 80, "Order")
+
+
+    p.setFont("Helvetica", 12)
+    y = height - 100
+    order_totals = defaultdict(lambda: defaultdict(int))
+
+    for person_instance in persons:
+        p.drawString(50, y, person_instance.first_name)
+        p.drawString(150, y, person_instance.last_name)
+        p.drawString(250, y, person_instance.group_id.group_name)
+        person_food = person_instance.get_food_for_today()
+        if person_food:
+            food_string = "Rot" if person_food.food == 2 else "Blau"
+            if person_instance.group_id is None or person_instance.group_id.facility_id is None:
+                facility_name = 'Unknown'
+            else:
+                facility_name = person_instance.group_id.facility_id.facility_name
+            order_totals[facility_name][food_string] += 1
+        else:
+            food_string = 'Keine Bestellung'
+        p.drawString(350, y, str(food_string))
+        y -= 20
+        if y < 40:  # Check if we need to create a new page
+            p.showPage()
+            p.setFont("Helvetica", 12)
+            y = height - 40
+
+    # Add totals to the PDF
+    p.showPage()
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, height - 40, "Order Totals by Facility")
+
+    p.setFont("Helvetica-Bold", 12)
+    y = height - 80
+    for facility, orders in order_totals.items():
+        p.setFont("Helvetica-Bold", 12)
+        p.drawString(50, y, str(facility))
+        y -= 20
+        for order, count in orders.items():
+            p.setFont("Helvetica", 12)
+            p.drawString(100, y, f"{order}: {count}")
+            y -= 20
+            if y < 40:  # Check if we need to create a new page
+                p.showPage()
+                p.setFont("Helvetica", 12)
+                y = height - 40
+
+    # Close the PDF object cleanly.
+    p.showPage()
+    p.save()
+
+    return response

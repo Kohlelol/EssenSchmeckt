@@ -56,6 +56,10 @@ class person(models.Model):
     def get_food_for_today(self):
         current_date = datetime.now().date()
         return food.objects.filter(person=self, date=current_date).first()
+    
+    def food_locked_for_today(self):
+        current_date = datetime.now().date()
+        return food.objects.filter(person=self, date=current_date).first().locked
 
     def __str__(self):
         return f"{self.last_name}, {self.first_name} | {self.date_of_birth}"

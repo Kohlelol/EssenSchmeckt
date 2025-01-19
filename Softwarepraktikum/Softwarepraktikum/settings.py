@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'users',
     'django_apscheduler',
-    'database.apps.DatabaseConfig',
+    'database',
 ]
 
 MIDDLEWARE = [

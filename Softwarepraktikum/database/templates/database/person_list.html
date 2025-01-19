@@ -1,12 +1,17 @@
 {% load static %}
+{% load custom_filters %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+{% with lock_all=person|any_locked %}
+
+
 {% for person in person %}
   <tr>
     <td>{{ person.last_name }}</td>
     <td>{{ person.first_name }}</td>
     <td>
       <div class="select-food-container">
-        <select id={{ person.id }} name="foodselect" class="select-food" onchange="updateFood(this, '{{ person.id }}');colorchange(this)"> 
+        <select id="{{ person.id }}" name="foodselect" class="select-food" onchange="updateFood(this, '{{ person.id }}');colorchange(this)" {% if lock_all %}disabled{% endif %}> 
           <option value="1" {% if not person.food_for_today %}selected{% endif %}>Nothing</option>
           <option value="2" {% if person.food_for_today and person.food_for_today.food == 2 %}selected{% endif %}>Red</option>
           <option value="3" {% if person.food_for_today and person.food_for_today.food == 3 %}selected{% endif %}>Blue</option>
@@ -19,5 +24,6 @@
     <td colspan="2">No persons found.</td>
   </tr>
 {% endfor %}
+{% endwith %}
 
 
