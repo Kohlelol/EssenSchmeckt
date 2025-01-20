@@ -197,7 +197,6 @@ def person_group_management(request):
 @login_required(login_url='/users/login/')
 @group_required('management')
 def fetch_person_group(request):
-    print("fetch_person_group started")
     query = request.GET.get('q', '')
     group_id = request.GET.get('group', '')
     
@@ -215,7 +214,6 @@ def fetch_person_group(request):
         persons = persons.filter(group_id=group_id)
         
     all_groups = group.objects.all()
-    print("render started")
     return render(request, 'database/group_list.html', {'person': persons, 'all_groups': all_groups})  
 
 @login_required(login_url='/users/login/')
@@ -225,22 +223,15 @@ def set_group(request):
         try:
             data = json.loads(request.body)
             person_id = data.get('person_id')
-            food_value = data.get('group_id')
-            person_instance = get_object_or_404(person, id=person_id)
-                        
-            # if int(food_value) == 1:
-            #     food_instance = food.objects.filter(person=person_instance, date=current_date).first()
-            #     if food_instance:
-            #         food_instance.delete()
-            #         return JsonResponse({'success': True})
-            #     else:
-            #         return JsonResponse({'success': False, 'error': 'Food order not found for the given person and date'})
-            # else:
-            #     food_instance, _ = food.objects.get_or_create(person=person_instance, date=current_date)
-            #     food_instance.food = food_value
-            #     food_instance.save()
-            
-            return JsonResponse({'success': True})
+            group_id_value = data.get('group_id_value')   
+            if int(group_id_value) and person_id:
+                person_instance = get_object_or_404(person, id=person_id)
+                group_instance = get_object_or_404(group, group_id=int(group_id_value))
+
+            if person_instance and group_instance:
+                person_instance.group_id = group_instance
+                person_instance.save()
+                return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})
     return JsonResponse({'success': False, 'error': 'Invalid request method'})

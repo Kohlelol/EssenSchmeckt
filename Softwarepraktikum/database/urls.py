@@ -26,6 +26,7 @@ urlpatterns = [
     path('success/', views.success, name='success'),
     path('create_facility_group/', views.create_facility_group, name='create_facility_group'),
     path('fetch-person-group/', views.fetch_person_group, name='fetch-person-group'),
+    path('set_group/', views.set_group, name='set_group'),
 ]
 
 if settings.DEBUG:

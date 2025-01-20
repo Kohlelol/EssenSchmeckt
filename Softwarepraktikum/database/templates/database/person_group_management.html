@@ -76,10 +76,10 @@
       })
     </script>
     <script>
-      function updateGroup(selectElement, personId, groupId) {
+      function updateGroup(selectElement, personId) {
         const selectedValue = selectElement.value;
     
-        fetch('set_group/', {
+        fetch("{% url 'database:set_group' %}", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -87,8 +87,7 @@
           },
           body: JSON.stringify({
             person_id: personId,
-            group_id: groupId,
-            food_value: selectedValue
+            group_id_value: selectedValue
           })
         })
         .then(response => response.json())
