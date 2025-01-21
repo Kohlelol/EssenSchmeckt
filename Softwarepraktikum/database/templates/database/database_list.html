@@ -20,7 +20,7 @@
         <select id="group-select" name="group" class="select-field">
           <option value="">Alle Gruppen</option>
           {% for group in groups %}
-            <option value="{{ group.group_id }}">{{ group.group_name }}</option>
+            <option value="{{ group.group_id }}">{{ group.group_name }} -- {{ group.task}}</option>
           {% endfor %}
         </select>
       </div>

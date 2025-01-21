@@ -18,14 +18,14 @@
             <p>Drag and drop a PDF file here or click to select a file</p>
         </div>
 
-        <button type="submit">Upload</button>
+        <button type="submit" id="submit-button">Upload</button>
     </form>
 
 </div>
 {% endblock %}
 
 {% block scripts %}
-<!-- Auto submission -->
+<!-- Auto submission --> <!--
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const dropArea = document.getElementById('drop-area');
@@ -34,6 +34,7 @@
         const fileForm = document.getElementById('file-form');
         const fromDateInput = document.getElementById('from_date');
         const expireDateInput = document.getElementById('expire_date');
+        const submitButton = document.getElementById('submit-button');
 
         // Prevent default drag behaviors
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
@@ -89,8 +90,25 @@
             }
         });
 
+        function checkFormValidity() {
+            const fromDate = fromDateInput.value;
+            const expireDate = expireDateInput.value;
+            const file = fileInput.files[0];
+
+            if (fromDate && expireDate && file) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+
         fromDateInput.addEventListener('change', checkAndSubmitForm);
         expireDateInput.addEventListener('change', checkAndSubmitForm);
+        fileInput.addEventListener('change', checkAndSubmitForm);
+
+        fromDateInput.addEventListener('change', checkFormValidity);
+        expireDateInput.addEventListener('change', checkFormValidity);
+        fileInput.addEventListener('change', checkFormValidity);
 
 
         // Validate dates and submit form if all data is provided
@@ -104,8 +122,89 @@
             }
         }
     });
-</script>
+</script> -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropArea = document.getElementById('drop-area');
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file');
+        const fileForm = document.getElementById('file-form');
+        const fromDateInput = document.getElementById('from_date');
+        const expireDateInput = document.getElementById('expire_date');
 
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Highlight drop area when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropZone.classList.add('highlight'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, () => dropZone.classList.remove('highlight'), false);
+        });
+
+        // Handle dropped files
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type === 'application/pdf') {
+                    fileInput.files = files;
+                } else {
+                    alert('Please upload a PDF file.');
+                }
+            }
+        }
+
+        
+        // Handle click to select file
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // Handle file selection
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file && file.type === 'application/pdf') {
+                // File is valid, no need to submit here
+            } else {
+                alert('Only PDF files are allowed.');
+                fileInput.value = ''; // Clear the input
+            }
+        });
+
+        // Validate dates before form submission
+        fileForm.addEventListener('submit', (e) => {
+            if (!validateDates()) {
+                e.preventDefault();
+            }
+        });
+
+        function validateDates() {
+            const fromDate = fromDateInput.value;
+            const expireDate = expireDateInput.value;
+            const file = fileInput.files[0];
+            if (!fromDate || !expireDate ||  !file) {
+                alert('Please attach a PDF file.');
+                return false;
+            }
+            return true;
+        }
+    });
+</script>
 <!-- 
 For submit via button
 
