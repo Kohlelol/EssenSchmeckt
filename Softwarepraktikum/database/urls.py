@@ -27,6 +27,8 @@ urlpatterns = [
     path('create_facility_group/', views.create_facility_group, name='create_facility_group'),
     path('fetch-person-group/', views.fetch_person_group, name='fetch-person-group'),
     path('set_group/', views.set_group, name='set_group'),
+    path('assign_account_to_person/', views.assign_account_to_person, name='assign_account_to_person'),
+    path('unassign_account/', views.unassign_account, name='unassign_account'),
 ]
 
 if settings.DEBUG:

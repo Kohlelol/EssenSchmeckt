@@ -632,3 +632,41 @@ def export_order(request):
     p.save()
 
     return response
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def assign_account_to_person(request):
+    all_persons = person.objects.exclude(user__isnull=False).order_by('last_name', 'first_name')
+    management_group = Group.objects.get(name='management')
+    all_users = User.objects.exclude(person__isnull=False).exclude(is_superuser=True).exclude(groups=management_group).order_by('username')
+    assigned_persons = person.objects.filter(user__isnull=False).order_by('last_name', 'first_name')
+    
+    if request.method == 'POST':
+        person_id = request.POST.get('person_id')
+        user_id = request.POST.get('user_id')
+        
+        person_instance = get_object_or_404(person, id=person_id)
+        user_instance = get_object_or_404(User, id=user_id)
+        
+        person_instance.user = user_instance
+        person_instance.save()
+        
+        return JsonResponse({'status': 'success', 'message': 'Account assigned successfully.'})
+         
+    return render(request, 'database/assign_account_to_person.html', {'persons': all_persons, 'users': all_users, 'assigned_persons': assigned_persons})
+
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def unassign_account(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        person_id = data.get('person_id')
+        
+        person_instance = get_object_or_404(person, id=person_id)
+        person_instance.user = None
+        person_instance.save()
+        
+        return JsonResponse({'status': 'success', 'message': 'Account unassigned successfully.'})
+    
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})

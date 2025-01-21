@@ -1,0 +1,199 @@
+{% extends "layout.html" %}
+{% load static %}
+{% block title %}Assign Account to Person{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-box">
+        <h2>Assign Account to Person</h2>
+        <form id="assignForm" method="post" action="{% url 'database:assign_account_to_person' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="personSelect">Select Person:</label>
+                <select id="personSelect" name="person_id" class="input-field">
+                    {% for person in persons %}
+                        <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="userSelect">Select User:</label>
+                <select id="userSelect" name="user_id" class="input-field">
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="submit-button">Assign Account</button>
+        </form>
+    </div>
+    <div class="form-box">
+        <h2>Assigned Accounts</h2>
+        <ul class="assigned-list">
+            {% for person in assigned_persons %}
+                <li>
+                    {{ person.first_name }} {{ person.last_name }} - {{ person.user.username }}
+                    <button class="unassign-button" data-person-id="{{ person.id }}">Unassign</button>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+document.getElementById('assignForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+
+    fetch(form.action, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        },
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Account assigned successfully.');
+            location.reload();  // Reload the page after success
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+});
+
+document.querySelectorAll('.unassign-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const personId = this.getAttribute('data-person-id');
+        fetch("{% url 'database:unassign_account' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ person_id: personId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Account unassigned successfully.');
+                location.reload();  // Reload the page after success
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
+</script>
+
+
+<style>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 20px;
+        gap: 5%;
+    }
+
+    .form-box {
+        background-color: #2c2c2c;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    h2 {
+        margin-top: 10px;
+        color: #ffffff;
+        font-size: x-large;
+        font-weight: bold;
+        text-align: center;
+        padding-bottom: 10px;
+    }
+
+    label {
+        margin: 5px 0;
+        color: #ffffff;
+        display: block;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 2px solid #007bff;
+        border-radius: 5px;
+        box-sizing: border-box;
+        transition: border-color 0.3s;
+        color: black;
+    }
+
+    .input-field:focus {
+        border-color: #0056b3;
+        outline: none;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        margin-top: 15px;
+    }
+
+    .submit-button:hover {
+        background-color: #0056b3;
+    }
+
+    .assigned-list {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .assigned-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: #3c3c3c;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+    .unassign-button {
+        background-color: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .unassign-button:hover {
+        background-color: #cc0000;
+    }
+
+    .input-field select {
+        color: black;
+    }
+</style>
+
+{% endblock %}
+
+
