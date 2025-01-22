@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Map CSV Columns</h2>
+<form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="column_mapping" value="1">
+    
+    <div class="form-group">
+        <label for="first_name">First Name Column:</label>
+        <select name="first_name" id="first_name" required>
+            <option value="">Select column</option>
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="last_name">Last Name Column:</label>
+        <select name="last_name" id="last_name" required>
+            <option value="">Select column</option>
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="group_number">Group Number Column:</label>
+        <select name="group_number" id="group_number" required>
+            <option value="">Select column</option>
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="group_description">Group Description Column:</label>
+        <select name="group_description" id="group_description" required>
+            <option value="">Select column</option>
+            {% for column in columns %}
+                <option value="{{ column }}">{{ column }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+
+
+    <div class="form-group">
+        <label for="create_missing_groups">Create Missing Groups:</label>
+        <input type="checkbox" name="create_missing_groups" id="create_missing_groups">
+    </div>
+
+    <div id="facility_fields" style="display: none;">
+        <div class="form-group">
+            <label for="facility">Facility Column:</label>
+            <select name="facility" id="facility">
+                <option value="">Select column</option>
+                {% for column in columns %}
+                    <option value="{{ column }}">{{ column }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="facility_separator">Facility Separator (if applicable):</label>
+            <input type="text" name="facility_separator" id="facility_separator">
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Import CSV</button>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const createMissingGroupsCheckbox = document.getElementById('create_missing_groups');
+        const facilityFields = document.getElementById('facility_fields');
+        const facilitySelect = document.getElementById('facility');
+
+        function toggleFacilityFields() {
+            if (createMissingGroupsCheckbox.checked) {
+                facilityFields.style.display = 'block';
+                facilitySelect.required = true;
+            } else {
+                facilityFields.style.display = 'none';
+                facilitySelect.required = false;
+            }
+        }
+
+        createMissingGroupsCheckbox.addEventListener('change', toggleFacilityFields);
+
+        // Initial check
+        toggleFacilityFields();
+    });
+</script>
+{% endblock %}

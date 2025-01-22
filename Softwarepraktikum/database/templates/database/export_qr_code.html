@@ -1,0 +1,56 @@
+{% extends 'layout.html' %}
+
+{% block title %}Export QR Code{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <form method="post" class="login-form">
+        {% csrf_token %}
+        <h2>Export QR Code</h2>
+        <!-- Search bar -->
+        <div class="search-bar-container">
+            <label for="search-input">Search:</label>
+            <input type="text" id="search-input" name="search" class="input-field" oninput="filterPersons()" placeholder="Search...">
+        </div>
+        <!-- Persons list -->
+        <label for="person_id">Select a Person:</label>
+        <select id="person_id" name="person_id" class="input-field" required>
+            {% for person in persons %}
+            <option value="{{ person.id }}">{{ person.last_name }}, {{ person.first_name }}</option>
+            {% endfor %}
+        </select><br>
+
+        <button type="submit" class="login-submit-button">Export QR Code</button>
+    </form>
+</div>
+{% endblock %}
+{% block scripts %}
+<!-- JavaScript to filter persons -->
+<script>
+    function filterPersons() {
+        let input = document.getElementById('search-input');
+        let filter = input.value.toUpperCase();
+        let select = document.getElementById('person_id');
+        let options = select.getElementsByTagName('option');
+        let found = false;
+    
+        for (let i = 0; i < options.length; i++) {
+            let text = options[i].textContent || options[i].innerText;
+            if (text.toUpperCase().indexOf(filter) > -1) {
+                options[i].style.display = "";
+                if (!found) {
+                    select.selectedIndex = i;
+                    found = true;
+                }
+            } else {
+                options[i].style.display = "none";
+            }
+        }
+    
+        if (!found) {
+            select.selectedIndex = 0;
+        }
+    }
+</script>
+
+{% endblock %}

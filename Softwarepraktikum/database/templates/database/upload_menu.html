@@ -123,6 +123,7 @@
         }
     });
 </script> -->
+<!-- For submit via button -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const dropArea = document.getElementById('drop-area');
@@ -205,89 +206,4 @@
         }
     });
 </script>
-<!-- 
-For submit via button
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dropArea = document.getElementById('drop-area');
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('file');
-        const fileForm = document.getElementById('file-form');
-        const fromDateInput = document.getElementById('from_date');
-        const expireDateInput = document.getElementById('expire_date');
-
-        // Prevent default drag behaviors
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        // Highlight drop area when item is dragged over it
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropZone.classList.add('highlight'), false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, () => dropZone.classList.remove('highlight'), false);
-        });
-
-        // Handle dropped files
-        dropArea.addEventListener('drop', handleDrop, false);
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles(files);
-        }
-
-        function handleFiles(files) {
-            if (files.length > 0) {
-                const file = files[0];
-                if (file.type === 'application/pdf') {
-                    fileInput.files = files;
-                } else {
-                    alert('Please upload a PDF file.');
-                }
-            }
-        }
-
-        // Handle click to select file
-        dropZone.addEventListener('click', () => fileInput.click());
-
-        // Handle file selection
-        fileInput.addEventListener('change', () => {
-            const file = fileInput.files[0];
-            if (file && file.type === 'application/pdf') {
-                // File is valid, no need to submit here
-            } else {
-                alert('Only PDF files are allowed.');
-                fileInput.value = ''; // Clear the input
-            }
-        });
-
-        // Validate dates before form submission
-        fileForm.addEventListener('submit', (e) => {
-            if (!validateDates()) {
-                e.preventDefault();
-            }
-        });
-
-        function validateDates() {
-            const fromDate = fromDateInput.value;
-            const expireDate = expireDateInput.value;
-            if (!fromDate || !expireDate) {
-                alert('Please fill in both dates.');
-                return false;
-            }
-            return true;
-        }
-    });
-</script>
-
--->
 {% endblock %}

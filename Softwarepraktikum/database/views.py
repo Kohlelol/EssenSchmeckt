@@ -14,6 +14,7 @@ from django.urls import reverse
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from collections import defaultdict
+import pandas as pd
 # Create your views here.
 
 
@@ -670,3 +671,100 @@ def unassign_account(request):
         return JsonResponse({'status': 'success', 'message': 'Account unassigned successfully.'})
     
     return JsonResponse({'status': 'error', 'message': 'Invalid request method.'})
+
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def export_qr_code(request):
+    if request.method == 'POST':
+        person_id = request.POST.get('person_id')
+        print(person_id)
+        person_instance = get_object_or_404(person, id=person_id)
+        
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_H,  # Change error correction level here
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(f"{person_id}")
+        qr.make(fit=True)
+
+        qr_code = qr.make_image(fill_color="black", back_color="white")
+        response = HttpResponse(content_type='image/png')
+        qr_code.save(response, 'PNG')
+        return response
+    
+    return render(request, 'database/export_qr_code.html', {'persons': person.objects.all().order_by('last_name', 'first_name')})
+
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def import_csv(request):
+    if request.method == 'POST':
+        if 'csv_file' in request.FILES:
+            csv_file = request.FILES['csv_file']
+            
+            if not csv_file.name.endswith('.csv'):
+                messages.error(request, 'Please upload a CSV file.')
+                return redirect('database:import_csv')
+            
+            df = pd.read_csv(csv_file)
+            columns = df.columns.tolist()
+            
+            request.session['csv_data'] = df.to_json()
+            
+            return render(request, 'database/map_csv_columns.html', {'columns': columns})
+        
+        elif 'column_mapping' in request.POST:
+            # Process the column mapping
+            column_mapping = {
+                'first_name': request.POST.get('first_name'),
+                'last_name': request.POST.get('last_name'),
+                'group_number': request.POST.get('group_number'),
+                'group_description': request.POST.get('group_description'),
+            }
+            create_missing_groups = request.POST.get('create_missing_groups') == 'on'
+            if create_missing_groups:
+                group_mapping = {
+                    'facility': request.POST.get('facility'),
+                    'facility_sperator': request.POST.get('facility_sperator'),
+                }
+            # Retrieve the DataFrame from the session
+            df = pd.read_json(request.session['csv_data'])
+            
+            for _, row in df.iterrows():
+                first_name = row[column_mapping['first_name']]
+                last_name = row[column_mapping['last_name']]
+                group_name = row[column_mapping['group_number']]
+                group_task = row[column_mapping['group_description']]
+                
+                if pd.isna(first_name) or pd.isna(last_name) or pd.isna(group_name):
+                    continue  # Skip rows with missing data
+                
+                if create_missing_groups:
+                    if pd.isna(group_mapping['group_number']) or pd.isna(group_mapping['group_description']):
+                        continue
+                    
+                    if group_mapping['facility'] == 'last_string_part':
+                        facility_name = row[column_mapping['group_description']].split(group_mapping['facility_sperator'])[-1]
+                        if not facility.objects.filter(facility_name=facility_name).exists():
+                            facility_instance = facility.objects.create(facility_name=facility_name)
+                            facility_instance.save()
+                    group.objects.create(group_name=row[column_mapping['group_number']], task=row[group_mapping['group_description']], facility_id=facility.objects.get(facility_name=group_mapping['facility']))
+                
+                # Get or create the group
+                if group_mapping['facility'] == 'last_string_part':
+                    group, _ = Group.objects.get_or_404(group_name=group_name)
+                
+                # Create the person
+                person.objects.create(
+                    first_name=first_name,
+                    last_name=last_name,
+                    group_id=group
+                )
+            
+            messages.success(request, 'CSV file imported successfully.')
+            return redirect('database:import_csv')
+    
+    return render(request, 'database/import_csv.html')
