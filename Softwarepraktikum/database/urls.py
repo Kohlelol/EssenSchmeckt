@@ -31,6 +31,7 @@ urlpatterns = [
     path('unassign_account/', views.unassign_account, name='unassign_account'),
     path('export_qr_code/', views.export_qr_code, name='export_qr_code'),
     path('import_csv/', views.import_csv, name='import_csv'),
+    path('assign_group_to_user/', views.assign_group_to_user, name='assign_group_to_user'),
 ]
 
 if settings.DEBUG:

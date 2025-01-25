@@ -26,6 +26,12 @@ PERMISSION_HIERARCHY = {
 
 }
 
+def get_user_highest_group(user):
+    user_groups = user.groups.values_list('name', flat=True)
+    for group in PERMISSION_HIERARCHY.keys():
+        if group in user_groups:
+            return group
+    return None
 
 def group_required(*group_names):
     def in_groups(u):
@@ -768,3 +774,54 @@ def import_csv(request):
             return redirect('database:import_csv')
     
     return render(request, 'database/import_csv.html')
+
+
+@login_required(login_url='/users/login/')
+@group_required('management', 'Standortleiter', 'Gruppenleiter')
+def assign_group_to_user(request):
+    all_users = User.objects.exclude(is_superuser=True).order_by('username')
+    
+    user_highest_group = get_user_highest_group(request.user)
+    if not user_highest_group and not request.user.is_superuser:
+        return JsonResponse({'status': 'error', 'message': 'You do not have permission to assign groups.'})
+    
+    if request.user.is_superuser:
+        assignable_groups = Group.objects.all().order_by('name')
+    else:
+        assignable_groups = Group.objects.filter(name__in=PERMISSION_HIERARCHY[user_highest_group]).order_by('name')
+    
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        group_ids = request.POST.getlist('group_ids')
+        
+        user_instance = get_object_or_404(User, id=user_id)
+        
+        # Clear existing groups
+        user_instance.groups.clear()
+        
+        # Assign selected groups within the user's permission level
+        for group_id in group_ids:
+            group_instance = get_object_or_404(Group, id=group_id)
+            if group_instance.name == 'admin' and not request.user.is_superuser:
+                return JsonResponse({'status': 'error', 'message': 'You do not have permission to assign the admin role.'})
+            if group_instance.name in PERMISSION_HIERARCHY[user_highest_group]:
+                user_instance.groups.add(group_instance)
+            else:
+                return JsonResponse({'status': 'error', 'message': f'You do not have permission to assign the group {group_instance.name}.'})
+        
+        user_instance.save()
+        
+        return JsonResponse({'status': 'success', 'message': 'Groups updated successfully.'})
+    
+    selected_user_id = request.GET.get('user_id')
+    selected_user_groups = []
+    if selected_user_id:
+        selected_user = get_object_or_404(User, id=selected_user_id)
+        selected_user_groups = selected_user.groups.all()
+    
+    return render(request, 'database/assign_group_to_user.html', {
+        'users': all_users,
+        'groups': assignable_groups,
+        'selected_user_groups': selected_user_groups,
+        'selected_user_id': selected_user_id
+    })
