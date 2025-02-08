@@ -15,6 +15,7 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from collections import defaultdict
 import pandas as pd
+from django.db.models import Count
 # Create your views here.
 
 
@@ -70,7 +71,7 @@ def get_duplicate_persons():
     return person
 
 @login_required(login_url='/users/login/')
-@group_required('groupleader')
+@group_required('groupleader', 'management', 'facility_manager')
 def database_list(request):
     query = request.GET.get('q', '')
     
@@ -103,7 +104,7 @@ def database_list(request):
 
 
 @login_required(login_url='/users/login/')
-@group_required('groupleader')
+@group_required('groupleader', 'management', 'facility_manager')
 def fetch_persons(request):
     query = request.GET.get('q', '')
     group_id = request.GET.get('group', '')
@@ -136,6 +137,7 @@ def fetch_persons(request):
     return render(request, 'database/person_list.html', {'person': combined_persons})                                                          
 
 @login_required(login_url='/users/login/')
+@group_required('groupleader', 'management', 'facility_manager')
 def set_food(request):
     if request.method == 'POST':
         try:
@@ -184,7 +186,8 @@ def attendance(request):
 def daily_order(request):
     return render(request, 'database/daily_order.html')
 
-
+@login_required(login_url='/users/login/')
+@group_required('management', 'facility_manager')
 def person_group_management(request):
     persons = person.objects.all()
     groups = group.objects.all()
@@ -202,7 +205,7 @@ def person_group_management(request):
     return render(request, 'database/person_group_management.html', {'person': persons, 'groups': groups})
 
 @login_required(login_url='/users/login/')
-@group_required('management')
+@group_required('management', 'facility_manager')
 def fetch_person_group(request):
     query = request.GET.get('q', '')
     group_id = request.GET.get('group', '')
@@ -224,7 +227,7 @@ def fetch_person_group(request):
     return render(request, 'database/group_list.html', {'person': persons, 'all_groups': all_groups})  
 
 @login_required(login_url='/users/login/')
-@group_required('management')
+@group_required('management', 'facility_manager')
 def set_group(request):
     if request.method == 'POST':
         try:
@@ -244,6 +247,8 @@ def set_group(request):
     return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
+@login_required(login_url='/users/login/')
+@group_required('management')
 def create_facility_group(request):
     groups = group.objects.all()
     facilites = facility.objects.all()
@@ -316,6 +321,8 @@ def qr_code_scanner(request):
 #             return render(request, 'database/decode_qr.html', {'success': False, 'qr_data': "Exceprion part"})
 #     return render(request, 'database/decode_qr.html', {'success': False, 'qr_data': 'Invalid request method'})
 
+@login_required(login_url='/users/login/')
+@group_required('management', 'groupleader', 'kitchen_staff')
 @csrf_exempt
 def decode_qr(request):
     if request.method == 'POST':
@@ -345,7 +352,7 @@ def setgroupleader(request):
     return render(request, 'database/setgroupleader.html')
 
 @login_required
-@group_required('facility_manager')
+@group_required('facility_manager', 'management')
 def setsubstitute(request):
         # query = request.GET.get('q', '')
     # if request.user.is_superuser:
@@ -410,6 +417,7 @@ def setsubstitute(request):
     return render(request, 'database/setsubstitute.html', {'groupleaders': list(persons.values('id', 'first_name', 'last_name')), 'groups': groups, 'groupleader_instances': groupleader_instances})
 
 @login_required
+@group_required('facility_manager', 'groupleader', 'management')
 def fetch_groupleaders(request):
     list_type = request.GET.get('list_type')
     all_groupleaders = groupleader.objects.all().values_list('person_id', flat=True)
@@ -525,7 +533,7 @@ def create_person(request):
 
 
 @login_required
-@group_required('group_leader')
+@group_required('groupleader', 'management')
 def upload_menu(request):
     if request.method == 'POST' and request.FILES['file']:
         file = request.FILES['file']
@@ -551,6 +559,7 @@ def success(request):
     return render(request, 'database/success.html', {'message': message, 'previous_page': previous_page})
 
 @login_required(login_url='/users/login/')
+@group_required('management', 'groupleader')
 def init_export_order(request):
     if request.method == 'POST':
         lock_items = request.POST.get('lock_items')
@@ -567,7 +576,7 @@ def init_export_order(request):
 
 
 @login_required(login_url='/users/login/')
-@group_required('management')
+@group_required('management', 'groupleader')
 def export_order(request):
     persons = person.objects.all().order_by('last_name', 'first_name')
     response = HttpResponse(content_type='application/pdf')
@@ -680,7 +689,7 @@ def unassign_account(request):
 
 
 @login_required(login_url='/users/login/')
-@group_required('management')
+@group_required('management', 'groupleader')
 def export_qr_code(request):
     if request.method == 'POST':
         person_id = request.POST.get('person_id')
@@ -777,7 +786,7 @@ def import_csv(request):
 
 
 @login_required(login_url='/users/login/')
-@group_required('management', 'Standortleiter', 'Gruppenleiter')
+@group_required('management')
 def assign_group_to_user(request):
     all_users = User.objects.exclude(is_superuser=True).order_by('username')
     
@@ -825,3 +834,112 @@ def assign_group_to_user(request):
         'selected_user_groups': selected_user_groups,
         'selected_user_id': selected_user_id
     })
+    
+
+@login_required(login_url='/users/login/')
+@group_required('management')
+def export_invoice(request):
+    if request.method == 'POST':
+        export_type =  request.POST.get('export_type')
+        from_date = request.POST.get('from_date')
+        to_date = request.POST.get('to_date')
+        
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+        
+        p = canvas.Canvas(response, pagesize=letter)
+        width, height = letter
+        
+        if export_type == 'one_person':
+            person_id = request.POST.get('person_id')
+            person_instance = get_object_or_404(person, id=person_id)
+            orders = food.objects.filter(person=person_instance, date__range=[from_date, to_date]).order_by('date')
+            
+            p.setFont("Helvetica-Bold", 16)
+            p.drawString(100, height - 40, f"Food Orders for {person_instance.first_name} {person_instance.last_name}")
+            
+            p.setFont("Helvetica", 12)
+            y = height - 80
+            for order in orders:
+                if order.food == 2:
+                    foodge = "Rot"
+                elif order.food == 3:
+                    foodge = "Blau"
+                p.drawString(50, y, f"{order.date}: {foodge}")
+                y -= 20
+                if y < 40:
+                    p.showPage()
+                    p.setFont("Helvetica", 12)
+                    y = height - 40
+        
+        elif export_type == 'all_persons':
+            orders = food.objects.filter(date__range=[from_date, to_date])
+            order_totals = orders.values('person__first_name', 'person__last_name', 'food').annotate(total=Count('food')).order_by('person__last_name', 'person__first_name', 'food')
+            
+            p.setFont("Helvetica-Bold", 16)
+            p.drawString(100, height - 40, "Food Order Totals by Person")
+            
+            p.setFont("Helvetica", 12)
+            y = height - 80
+            current_person = None
+            person_totals = {}
+            for order in order_totals:
+                person_name = f"{order['person__first_name']} {order['person__last_name']}"
+
+                if person_name not in person_totals:
+                    person_totals[person_name] = {}
+                if order['food'] not in person_totals[person_name]:
+                    person_totals[person_name][order['food']] = 0
+                person_totals[person_name][order['food']] += order['total']
+            
+            # Draw table header
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, y, "Person")
+            p.drawString(200, y, "Food")
+            p.drawString(350, y, "Total")
+            y -= 20
+            
+            # Draw table rows
+            for person_name, foods in person_totals.items():
+                for foodge, total in foods.items():
+                    p.setFont("Helvetica", 12)
+                    p.drawString(50, y, person_name)
+                    if foodge == 2:
+                        foodge = "Rot"
+                    elif foodge == 3:
+                        foodge = "Blau"
+                    p.drawString(200, y, foodge)
+                    p.drawString(350, y, str(total))
+                    y -= 20
+                    if y < 40:
+                        p.showPage()
+                        p.setFont("Helvetica", 12)
+                        y = height - 40
+            
+            # Draw total summary
+            p.setFont("Helvetica-Bold", 12)
+            p.drawString(50, y, "Total Summary")
+            y -= 20
+            total_summary = orders.values('food').annotate(total=Count('food')).order_by('food')
+            for summary in total_summary:
+                p.setFont("Helvetica", 12)
+                if summary['food'] == 2:
+                    summary['food'] = "Rot"
+                elif summary['food'] == 3:
+                    summary['food'] = "Blau"
+                p.drawString(200, y, summary['food'])
+                p.drawString(350, y, str(summary['total']))
+                y -= 20
+                if y < 40:
+                    p.showPage()
+                    p.setFont("Helvetica", 12)
+                    y = height - 40
+        
+        p.showPage()
+        p.save()
+        
+        return response
+    return render(request, 'database/export_invoice.html', {'persons': person.objects.all().order_by('last_name', 'first_name')})  
+
+        
+                

@@ -32,6 +32,7 @@ urlpatterns = [
     path('export_qr_code/', views.export_qr_code, name='export_qr_code'),
     path('import_csv/', views.import_csv, name='import_csv'),
     path('assign_group_to_user/', views.assign_group_to_user, name='assign_group_to_user'),
+    path('export_invoice/', views.export_invoice, name='export_invoice'),
 ]
 
 if settings.DEBUG:
