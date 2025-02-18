@@ -3,44 +3,48 @@
 {% block title %}Set Substitute{% endblock %}
 
 {% block content %}
-<br>
-<br>
-<br>
-<br>
-<h1>Set Substitute</h1>
 
-<!-- add to a table to view current  -->
-
-{% for groupleader_instance in groupleader_instances%}
-    <p>{{ groupleader_instance.group.group_name }} -- {{ groupleader_instance.person.first_name }} {{ groupleader_instance.person.last_name }}</p>
-{% endfor %}
-
-<form method="POST">
-    {% csrf_token %}
-    <label for="group_id">Group</label>
-    <select name="group_id" id="group_id">
-        {% for group in groups %}
-            <option value="{{ group.group_id }}">{{ group.group_name }}</option>
-        {% endfor %}
-    </select><br>
-
-    <label for="list_type">Select List</label>
-    <select id="list_type">
-        <option value="groupleaders">Hat die Rolle Gruppenleiter</option>
-        <option value="not_groupleaders">War noch kein Gruppenleiter (hat schon einen Account)</option>
-    </select><br>
-
-    <label for="person_id">Groupleader to assign</label>
-    <select name="person_id" id="person_id">
-        <option value="">None</option>
-    </select><br>
-
-    <label for="expire_date">Expiration Date</label>
-    <input type="date" id="expire_date" name="expire_date"><br>
-
-
-    <button type="submit">Set</button>
-</form>
+    <div class="container">
+        <div class="form-box1">
+            <h2>Gruppenleiter</h2>
+            <br>
+            <ul class="assigned-list">
+                {% for groupleader_instance in groupleader_instances %}
+                    <li>
+                        <p>{{ groupleader_instance.group.group_name }} -- {{ groupleader_instance.person.first_name }} {{ groupleader_instance.person.last_name }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="form-container">
+            <h1>Vertretung auswählen</h1>
+            <form method="POST">
+                {% csrf_token %}
+                <label for="group_id">Gruppe:</label>
+                <select name="group_id" id="group_id" class="input-field">
+                    {% for group in groups %}
+                        <option value="{{ group.group_id }}">{{ group.group_name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <label for="list_type">Gruppenleiterstatus:</label>
+                <select id="list_type" class="input-field">
+                    <option value="groupleaders">Hat die Rolle Gruppenleiter</option>
+                    <option value="not_groupleaders">War noch kein Gruppenleiter (hat schon einen Account)</option>
+                </select>
+                
+                <label for="person_id">Folgenden Gruppenleiter zuweisen: </label>
+                <select name="person_id" id="person_id" class="input-field">
+                    <option value="">Leer</option>
+                </select>
+                
+                <label for="expire_date">Bis zu folgendem Datum:</label>
+                <input class="input-field" type="date" id="expire_date" name="expire_date">
+                
+                <button class="login-submit-button" type="submit">Speichern</button>
+            </form>
+        </div>
+    </div>
 
 
 {% endblock %}
@@ -73,4 +77,54 @@
         listTypeSelect.dispatchEvent(new Event('change'));
     });
 </script>
+
+<style>
+         body {
+            height: 100vh;
+        }
+        
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+
+        }
+        .form-box1 {
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+        }
+        .assigned-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .assigned-list li {
+            padding: 10px;
+            background-color: #3c3c3c;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .form-container {
+            background-color: #2c2c2c;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 30%;
+        }
+        .form-container form {
+            margin-top: 10px;
+           box-sizing: border-box;
+        }
+       
+
+</style>
+
+
 {% endblock %}

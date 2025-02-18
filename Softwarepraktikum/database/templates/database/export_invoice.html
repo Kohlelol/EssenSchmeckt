@@ -4,19 +4,19 @@
 
 {% block content %}
 <div class="form-container">
-    <div class="form-box">
-        <h2>Export Invoice</h2>
+    <div class="form-box1">
+        <h2>Rechnung exportieren</h2>
         <form id="exportInvoiceForm" method="post" action="{% url 'database:export_invoice' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="exportTypeSelect">Select Export Type:</label>
+                <label for="exportTypeSelect">Wähle die gewünschte Art:</label>
                 <select id="exportTypeSelect" name="export_type" class="input-field" onchange="togglePersonSelect(this.value)">
-                    <option value="all_persons">All Persons</option>
-                    <option value="one_person">One Person</option>
+                    <option value="all_persons">Alle Personen</option>
+                    <option value="one_person">Eine Person</option>
                 </select>
             </div>
             <div class="form-group" id="personSelectGroup" style="display: none;">
-                <label for="personSelect">Select Person:</label>
+                <label for="personSelect">Wähle die Person:</label>
                 <select id="personSelect" name="person_id" class="input-field">
                     {% for person in persons %}
                         <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
@@ -24,14 +24,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="fromDate">From Date:</label>
+                <label for="fromDate">Von folgendem Datum:</label>
                 <input type="date" id="fromDate" name="from_date" class="input-field" required>
             </div>
             <div class="form-group">
-                <label for="toDate">To Date:</label>
+                <label for="toDate">Bis zu folgendem Datum:</label>
                 <input type="date" id="toDate" name="to_date" class="input-field" required>
             </div>
-            <button type="submit" class="submit-button">Export PDF</button>
+            <button type="submit" class="submit-button">Exportiere die PDF</button>
         </form>
     </div>
 </div>
@@ -54,19 +54,25 @@ function togglePersonSelect(value) {
         align-items: center;
         height: 100vh;
         padding: 20px;
+      
     }
     
-    .form-box {
+    .form-box1 {
         background-color: #2c2c2c;
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        width: 40%;
+        width: 15%;
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 20%;
     }
-    
+
+    .form-box1 form{
+        width: 98%;
+    }
+
     h2 {
         margin-top: 10px;
         color: #ffffff;

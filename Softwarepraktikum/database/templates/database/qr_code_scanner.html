@@ -13,11 +13,12 @@
     </div>
     <div id="qr-result" class="qr-result" style="display:none;"></div>
 </div>
-
+ 
 {% endblock %}
 
 {% block scripts %}
 <style>
+   
     .container {
         display: flex;
         flex-direction: column;
@@ -29,6 +30,7 @@
         display: block;
         justify-content: center;
         align-items: center;
+        /* width: 100%; */
     }
     video {
         border: 2px solid #000;
@@ -58,6 +60,9 @@
         margin-top: 20px;
         text-align: center;
     }
+
+ 
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 

@@ -3,28 +3,42 @@
 {% block title %}Upload PDF{% endblock %}
 
 {% block content %}
-<h1>Upload PDF</h1>
-<div id="drop-area">
+
+<div class="form-box"  id="drop-area">
+    <h1>PDF hochladen</h1>
+    <br>
+  
     <form id="file-form" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <input type="file" id="file" name="file" accept="application/pdf" style="display: none;">
-        <label for="from_date">From Date:</label>
-        <input type="date" id="from_date" name="from_date" required><br>
+        <input class="input-field" type="file" id="file" name="file" accept="application/pdf" style="display: none;">
+        <label for="from_date">Von folgendem Datum:</label>
+        <input class="input-field" type="date" id="from_date" name="from_date" required><br>
         
-        <label for="expire_date">Expiration Date:</label>
-        <input type="date" id="expire_date" name="expire_date" required><br>
+        <label for="expire_date">Bis zum folgenden Datum:</label>
+        <input class="input-field" type="date" id="expire_date" name="expire_date" required><br>
         
         <div id="drop-zone">
-            <p>Drag and drop a PDF file here or click to select a file</p>
+            <p>PDF-File auf Fläche ziehen, oder anklicken und Datei auswählen</p>
         </div>
 
-        <button type="submit" id="submit-button">Upload</button>
+        <button class="login-submit-button" type="submit" id="submit-button">Hochladen</button>
     </form>
 
 </div>
 {% endblock %}
 
 {% block scripts %}
+<style>
+
+#drop-zone {
+    border: 2px dashed white;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+</style>
 <!-- Auto submission --> <!--
 <script>
     document.addEventListener('DOMContentLoaded', function() {

@@ -3,34 +3,39 @@
 {% block title %}Export Order{% endblock %}
 
 {% block content %}
-<div class="export-container">
-    <h2>Export Order</h2>
-    <form action="{% url 'database:init_export_order' %}" method="post" onsubmit="return confirmExport()">
-        {% csrf_token %}
-        <div class="form-group">
-            <span class="lock-label">Lock items after export</span>
-            <label for="lock-toggle" class="switch">
-                <input type="checkbox" id="lock-toggle" name="lock_items">
-                <span class="slider round"></span>
-            </label>
-        </div>
-        <div class="warning-message" id="warning-message" style="display: none;">
-            Warning: Locking items cannot be undone!
-        </div>
-        <button type="submit" id="export-button" class="export-button" disabled>Export Order</button>
-    </form>
-</div>
+
+    <div class="export-container">
+        <h2>Export Order</h2>
+        <form action="{% url 'database:init_export_order' %}" method="post" onsubmit="return confirmExport()">
+            {% csrf_token %}
+            <div class="form-group">
+                <span class="lock-label">Lock items after export</span>
+                <label for="lock-toggle" class="switch">
+                    <input type="checkbox" id="lock-toggle" name="lock_items">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div class="warning-message" id="warning-message" style="display: none;">
+                Warning: Locking items cannot be undone!
+            </div>
+            <button type="submit" id="export-button" class="export-button" disabled>Export Order</button>
+        </form>
+    </div>
 
 <style>
 /* Export Order Styles */
+
+
 .export-container {
     max-width: 400px;
-    margin: 50px auto;
+    margin: 15% auto; 
     padding: 20px;
     background-color: #2c2c2c;
     border-radius: 10px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s;
+
+    
 }
 
 .export-container h2 {
@@ -78,6 +83,7 @@
     display: inline-block;
     width: 50px; /* Adjust the width as needed */
     height: 24px; /* Adjust the height as needed */
+    margin-left: 45px;
 }
 
 .slider {

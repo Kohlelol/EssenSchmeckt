@@ -6,21 +6,22 @@
 <div class="login-container">
     <form method="post" class="login-form">
         {% csrf_token %}
-        <h2>Export QR Code</h2>
+        <h2>QR-Code exportieren </h2>
+        <br>
         <!-- Search bar -->
         <div class="search-bar-container">
-            <label for="search-input">Search:</label>
-            <input type="text" id="search-input" name="search" class="input-field" oninput="filterPersons()" placeholder="Search...">
+            <label for="search-input">Suche nach Person:</label>
+            <input type="text" id="search-input" name="search" class="input-field" oninput="filterPersons()" placeholder="Suche...">
         </div>
         <!-- Persons list -->
-        <label for="person_id">Select a Person:</label>
+        <label for="person_id">Wähle eine Person:</label>
         <select id="person_id" name="person_id" class="input-field" required>
             {% for person in persons %}
             <option value="{{ person.id }}">{{ person.last_name }}, {{ person.first_name }}</option>
             {% endfor %}
         </select><br>
 
-        <button type="submit" class="login-submit-button">Export QR Code</button>
+        <button type="submit" class="login-submit-button">QR-Code exportieren</button>
     </form>
 </div>
 {% endblock %}

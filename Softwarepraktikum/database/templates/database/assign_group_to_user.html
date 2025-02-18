@@ -3,134 +3,118 @@
 {% block title %}Assign Groups to User{% endblock %}
 
 {% block content %}
-<div class="login-container">
+
     <div class="form-box">
-        <h2>Assign Groups to User</h2>
-        <form id="assignGroupForm" method="post" class="login-form" action="{% url 'database:assign_group_to_user' %}">
+        <h2>Account einer Rechtegruppe zuweisen</h2>
+        
+        <form id="assignGroupForm" method="post"  action="{% url 'database:assign_group_to_user' %}">
             {% csrf_token %}
             <div class="form-group">
-                <label for="userSelect">Select User:</label>
+                <label for="userSelect">Account wählen:</label>
                 <select id="userSelect" name="user_id" class="input-field" onchange="fetchUser Groups(this.value)">
-                    <option value="">Select a user</option>
+                    <option value="">Wähle einen Account</option>
                     {% for user in users %}
                         <option value="{{ user.id }}" {% if user.id|stringformat:"s" == selected_user_id %}selected{% endif %}>{{ user.username }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="form-group">
-                <label>Select Groups:</label>
+                <label>Rechtegruppen:</label>
+                <br>
                 <div class="checkbox-group">
                     {% for group in groups %}
                         <div class="checkbox-item">
-                            <label for="group_{{ group.id }}">{{ group.name }}</label>
-                            <input type="checkbox" id="group_{{ group.id }}" name="group_ids" value="{{ group.id }}" {% if group in selected_user_groups %}checked{% endif %}>
+                            <label for="group_{{ group.id }}"><input class="input-box" type="checkbox" id="group_{{ group.id }}" name="group_ids" value="{{ group.id }}" {% if group in selected_user_groups %}checked{% endif %}>      {{ group.name }}</label>
+                            
                         </div>
                     {% endfor %}
                 </div>
             </div>
-            <button type="submit" class="submit-button">Update Groups</button>
+            <button type="submit" class="login-submit-button">Zuweisung bestätigen</button>
         </form>
     </div>
-</div>
+
 
 <script>
 // ... (keep the existing JavaScript code)
 </script>
 {% endblock %}
 
-{% block styles %}
+{% block scripts %}
 <style>
-    .form-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
+    .checkbox-item label{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 18px;
     }
-    
-    .form-box {
-        background-color: #2c2c2c;
-        padding: 30px;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 400px;
-        align-items: center;
-        justify-content: center;
+
+    .input-box{
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    margin-right: 4px;
     }
-    
+
+    .form-box form{
+
+        width:100%;
+    }
+
+
     h2 {
         margin-top: 0;
         color: #ffffff;
-        font-size: 24px;
+        font-size: 25px;
         font-weight: bold;
-        text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 20px; 
     }
     
     .form-group {
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        display:block;
     }
     
     label {
         color: #ffffff;
         display: block;
         margin-bottom: 5px;
-    }
-    
-    .input-field {
-        width: 100%;
-        padding: 10px;
-        border: 2px solid #007bff;
-        border-radius: 5px;
-        background-color: #3c3c3c;
-        color: #ffffff;
-        font-size: 16px;
-    }
-    
-    .input-field:focus {
-        border-color: #0056b3;
-        outline: none;
-    }
+        font-size: 18px;
 
+    }
+    
+    .checkbox-item {
+        text-align: left;
+        display:block;
+        align-items: center;
+      
+
+    }
+    
     .checkbox-group {
         display: flex;
         flex-direction: column;
+        width:100%;
+  
     }
 
     .checkbox-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 10px;
-        background-color: #3c3c3c;
+        padding: 2px;
         border-radius: 5px;
         margin-bottom: 5px;
     }
 
     .checkbox-item label {
-        margin-bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-bottom: 0px;
         flex-grow: 1;
-    }
-
-    .checkbox-item input[type="checkbox"] {
-        margin-left: 10px; 
-    }
-
-    .submit-button {
-        width: 100%;
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s;
-    }
-    
-    .submit-button:hover {
-        background-color: #0056b3;
-    }
+}
 </style>
 {% endblock %}
