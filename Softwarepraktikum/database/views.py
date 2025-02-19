@@ -259,7 +259,8 @@ def create_facility_group(request):
             facility_id = request.POST.get('facility_id')
             task = request.POST.get('group_task')
             try:
-                group_instance = group(group_name=group_name, facility_id=facility_id, task=task)
+                facility_instance = facility.objects.get(facility_id=facility_id)
+                group_instance = group(group_name=group_name, facility_id=facility_instance, task=task)
                 group_instance.save()
             except IntegrityError:
                 error = {'form_type': 'create_group', 'message': 'Group creation failed'}

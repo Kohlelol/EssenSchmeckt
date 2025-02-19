@@ -6,17 +6,18 @@
 <div class="form-container">
     <div class="form-box1">
         <h2>Gruppe erstellen</h2>
-        <form action="{% url 'database:person_group_management' %}" method="post">
+        <form action="{% url 'database:create_facility_group' %}" method="POST">
         {% csrf_token %}
+        <input type="text" name="form_type" id="form_type" hidden value="create_group">
         <label for="group_name">Gruppennummer:</label>
         <input type="text" id="group_name" name="group_name" class="input-field" required>
         <label for="group_task">Aufgabe: </label>
-        <input type="text" id="group_task" name="ggroup_task" class="input-field" required>
+        <input type="text" id="group_task" name="group_task" class="input-field" required>
         <label for="faclility_id">Standort</label>
         <select name="facility_id" id="facility_id" class="input-field" required>
             <option value="" disabled selected>Standort auswählen</option>
             {% for facility in facilities %}
-                <option value="{{ facility.id }}">{{ facility.facility_name }}</option>
+                <option value="{{ facility.facility_id }}">{{ facility.facility_name }}</option>
             {% endfor %}
         </select>
         <button type="submit" class="submit-button">Gruppe erstellen</button>
@@ -27,8 +28,9 @@
     </div>
     <div class="form-box1">
         <h2>Standort erstellen</h2>
-        <form action="{% url 'database:person_group_management' %}" method="post">
+        <form action="{% url 'database:create_facility_group' %}" method="POST">
         {% csrf_token %}
+        <input type="text" name="form_type" id="form_type" hidden value="create_facility">
         <label for="facility_name">Standortname:</label>
         <input type="text" id="facility_name" name="facility_name" class="input-field" required>
         <label for="facility_location">Adresse (optional)</label>
