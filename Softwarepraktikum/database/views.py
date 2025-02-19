@@ -331,15 +331,19 @@ def decode_qr(request):
             qr_data = data.get('qr_data', '')
             if qr_data == '':
                 return render(request, 'database/decode_qr.html', {'success': False, 'error': 'No QR data found'})
-    
+            print(qr_data)
             current_date = datetime.now().date()
             person_instance = person.objects.get(id=qr_data)
 
-            food_instance = food.objects.filter(date=current_date, person=person).first()
+            food_instance = food.objects.filter(date=current_date, person=person_instance).first()
             if food_instance:
                 if food_instance.served:
                     return render(request, 'database/decode_qr.html', {'success': True, 'person': person_instance, 'food': 'Food already served for the given person and date'})
-                return render(request, 'database/decode_qr.html', {'success': True, 'person': person_instance, 'food': food_instance.food + ' marked as served'})
+                if food_instance.food == 2:
+                    food_instance.food = "Rot"
+                elif food_instance.food == 3:
+                    food_instance.food = "Blau"
+                return render(request, 'database/decode_qr.html', {'success': True, 'person': person_instance, 'food': str(food_instance.food) + ' marked as served'})
             else:
                 return render(request, 'database/decode_qr.html', {'success': True, 'person': person_instance, 'food': 'No food order found for the given person and date'})
 

@@ -11,6 +11,15 @@
   <br />
 
   <div class="database-list-container">
+    {% if latest_pdf %}
+    <button id="show-pdf-button">Show Latest PDF</button>
+    <div id="pdf-container" style="display: none;">
+        <!-- <iframe id="pdf-frame" src="{{ latest_pdf.file.url }}" width="100%" height="600px"></iframe> --> <!-- fuck it cant fix rn -->
+    <a href="{{ latest_pdf.file.url }}" target="_blank">Open PDF</a>
+    </div>
+    {% else %}
+    <p>No PDF available for the current day.</p>
+    {% endif %}
     <form id="search-form" method="get" action="{% url 'database:person_group_management' %}">
       <div class="form-row">
         <input type="text" id="search-input" name="q" placeholder="Search..." value="{{ request.GET.q }}" class="input-field-table" />
@@ -41,15 +50,7 @@
   <br />
   <br />
 
-  {% if latest_pdf %}
-  <button id="show-pdf-button">Show Latest PDF</button>
-  <div id="pdf-container" style="display: none;">
-      <!-- <iframe id="pdf-frame" src="{{ latest_pdf.file.url }}" width="100%" height="600px"></iframe> --> <!-- fuck it cant fix rn -->
-  <a href="{{ latest_pdf.file.url }}" target="_blank">Open PDF</a>
-  </div>
-  {% else %}
-  <p>No PDF available for the current day.</p>
-  {% endif %}
+
 
 {% endblock %}
 

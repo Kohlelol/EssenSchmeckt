@@ -447,7 +447,7 @@
         .database-list-table table {
             width: 80%;
             border-collapse: collapse;
-            background-color: #9cccfc; /* 1e1e24 */
+            background-color: #1e1e24; /* 1e1e24 */
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
@@ -467,21 +467,21 @@
         }
 
         .database-list-table table th {
-            background-color: #34649c; /* 3a3b42 */
+            background-color: #3a3b42; /* 3a3b42 */
             font-weight: bold;
             text-transform: uppercase;
             text-align: center;
-            color: #9cccfc;
+            color: #e0e0e0;
         }
 
         .database-list-table table:has(th:nth-child(1):hover) td:nth-child(1),
         .database-list-table table:has(th:nth-child(2):hover) td:nth-child(2),
         .database-list-table table:has(th:nth-child(3):hover) td:nth-child(3)  {
-            background-color: #273849;
+            background-color: #25242c;
         }
 
         .database-list-table table tr:hover {
-            background-color: #272836; /* #272836 */
+            background-color: #25242c; 
             cursor: pointer;
         }
 
@@ -514,7 +514,7 @@
             padding: 10px;
             border: 1px solid #333;
             border-radius: 6px;
-            background: #34649c; /* #1e1e1e */
+            background: #1e1e1e; /* #1e1e1e */
             font-size: 16px;
             color: #e0e0e0;
             cursor: pointer;
@@ -525,14 +525,14 @@
 
 
         .select-food:focus{
-            border-color: #0474bc; /* #007bff */
-            box-shadow: 0 0 5px #000000; /* 0 0 5px rgba(0, 123, 255, 0.5) */
-            background-color: #759fca; /* #25242c */
+            border-color: #007bff; /* #007bff */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 0 0 5px rgba(0, 123, 255, 0.5) */
+            background-color: #25242c; /* #25242c */
             border-radius: 6px 6px 0 0
         }
         
         .select-food option{
-            background: #759fca;; /* #37354b */
+            background: #25242c;
             color: #e0e0e0;
         }
 

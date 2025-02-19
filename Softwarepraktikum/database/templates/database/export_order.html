@@ -21,22 +21,9 @@
             <button type="submit" id="export-button" class="export-button" disabled>Bestellung exportieren</button>
         </form>
     </div>
-     <button onclick=zeigeBild() class="button-hidden">.  </button>
-     <img class="image-hidden" id="hidden" src="{% static 'images/bausff.jpg'%}" alt="Ein Bild, welches dem Nutzer Freude bereiten soll" style="display: none;">
 <style>
 /* Export Order Styles */
-.button-hidden{
-    background-color: rgb(21, 21, 21);
-    border: #494949;
-    width: 5%;
-    height: 5%;
-}
-.image-hidden{
-    scale: 900%;
-    padding-left: 10%;
-    padding-bottom: 3%;
 
-}
 .export-container {
     max-width: 400px;
     margin: 15% auto; 
@@ -180,9 +167,6 @@ body.light-mode input:checked + .slider {
         return true;
     }
 
-    function zeigeBild() {
-            document.getElementById('hidden').style.display = 'block';
-        }
 
 </script>
 {% endblock %}
