@@ -610,7 +610,10 @@ def export_order(request):
     for person_instance in persons:
         p.drawString(50, y, person_instance.first_name)
         p.drawString(150, y, person_instance.last_name)
-        p.drawString(250, y, person_instance.group_id.group_name)
+        if person_instance.group_id:
+            p.drawString(250, y, person_instance.group_id.group_name)
+        else:
+            p.drawString(250, y, "Unbekannt")
         person_food = person_instance.get_food_for_today()
         if person_food:
             food_string = "Rot" if person_food.food == 2 else "Blau"
